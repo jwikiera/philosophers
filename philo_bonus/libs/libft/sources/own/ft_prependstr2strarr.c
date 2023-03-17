@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_prependstr2strarr.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+char	**ft_prependstr2strarr(char *str, char **arr)
 {
-	printf("lol\n");
-	return (NULL);
-}
+	t_list	*one_lst;
+	char	*strcp;
+	char	**onearr;
+	char	**res;
 
-
-
-int	main(int argc, char **argv)
-{
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
+	one_lst = NULL;
+	strcp = ft_strdup(str);
+	if (!strcp)
+		return (NULL);
+	if (!ft_lstadd_str(strcp, &one_lst))
 	{
-		printf("Invalid arguments\n");
-		return (0);
+		free(strcp);
+		return (NULL);
 	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	onearr = ft_tlst_to_strarr(one_lst);
+	ft_lstclear(&one_lst, ft_delnode);
+	if (!onearr)
+		return (NULL);
+	res = ft_strarrjoin(onearr, arr);
+	ft_free_split(onearr, ft_strarrlen(onearr));
+	return (res);
 }

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#ifndef LIBFT__H
+# define LIBFT__H
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
+# include <stdlib.h>
+# include <limits.h>
+# include <unistd.h>
 
-void	*routine()
-{
-	printf("lol\n");
-	return (NULL);
-}
+int		ft_isdigit_(int c);
+size_t	ft_strlen_(const char *s);
+void	ft_putchar_fd_(char c, int fd);
+void	ft_putstr_fd_(char *s, int fd);
+void	ft_putnbr_fd_(int n, int fd);
+int		my_abs_(int a);
+void	*ft_calloc_(size_t nmemb, size_t size);
+void	*ft_memset_(void *s, int c, size_t n);
+void	ft_bzero_(void *s, size_t n);
+int		ft_atoi_(const char *nptr);
 
-
-
-int	main(int argc, char **argv)
-{
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
-	{
-		printf("Invalid arguments\n");
-		return (0);
-	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
-}
+#endif

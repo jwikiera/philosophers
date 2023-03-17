@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_lstadd_chr.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+/* *content is not a null terminated string, only a single char */
+int	ft_lstadd_chr(char c, t_list **lst)
 {
-	printf("lol\n");
-	return (NULL);
-}
+	t_list	*child;
+	char	*content;
 
-
-
-int	main(int argc, char **argv)
-{
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
+	content = malloc(sizeof(*content));
+	if (!content)
+		return (0);
+	content[0] = c;
+	child = ft_lstnew(content);
+	if (!child)
 	{
-		printf("Invalid arguments\n");
+		free(content);
 		return (0);
 	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	ft_lstadd_back(lst, child);
+	return (1);
 }

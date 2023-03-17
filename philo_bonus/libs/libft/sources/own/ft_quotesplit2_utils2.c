@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_quotesplit2_utils2.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+char	*ft_qtsplt2_ret(t_list **word, char *res)
 {
-	printf("lol\n");
-	return (NULL);
-}
-
-
-
-int	main(int argc, char **argv)
-{
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
-	{
-		printf("Invalid arguments\n");
-		return (0);
-	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	ft_lstclear(word, ft_delnode);
+	return (res);
 }

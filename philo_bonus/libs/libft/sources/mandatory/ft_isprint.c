@@ -1,25 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_struct.c                                      :+:      :+:    :+:   */
+/*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/11 11:46:56 by jwikiera          #+#    #+#             */
-/*   Updated: 2022/10/11 13:36:27 by jwikiera         ###   ########.fr       */
+/*   Created: 2022/10/11 12:24:07 by jwikiera          #+#    #+#             */
+/*   Updated: 2022/10/11 16:34:17 by jwikiera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-void	init_struct(t_philo *philo, int argc, char *argv[])
+int	ft_isprint(int c)
 {
-	philo->phil_num = ph_atoi(argv[1]);
-	philo->time2die = ph_atoi(argv[2]);
-	philo->time2eat = ph_atoi(argv[3]);
-	philo->time2sleep = ph_atoi(argv[4]);
-	if (argc == 6)
-		philo->num2eat = ph_atoi(argv[5]);
-	else
-		philo->num2eat = -1;
+	return (c >= 32 && c <= 126);
 }

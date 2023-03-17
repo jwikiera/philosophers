@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_struct.c                                      :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/11 11:46:56 by jwikiera          #+#    #+#             */
-/*   Updated: 2022/10/11 13:36:27 by jwikiera         ###   ########.fr       */
+/*   Created: 2022/10/11 12:50:27 by jwikiera          #+#    #+#             */
+/*   Updated: 2022/10/11 16:19:21 by jwikiera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft_.h"
 
-void	init_struct(t_philo *philo, int argc, char *argv[])
+size_t	ft_strlen_(const char *s)
 {
-	philo->phil_num = ph_atoi(argv[1]);
-	philo->time2die = ph_atoi(argv[2]);
-	philo->time2eat = ph_atoi(argv[3]);
-	philo->time2sleep = ph_atoi(argv[4]);
-	if (argc == 6)
-		philo->num2eat = ph_atoi(argv[5]);
-	else
-		philo->num2eat = -1;
+	size_t	i;
+
+	i = 0;
+	while (s[0])
+	{
+		s ++;
+		i ++;
+	}
+	return (i);
 }

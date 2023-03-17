@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_println_strarr.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+int	ft_println_strarr(char **arr, size_t len, int null_terminated)
 {
-	printf("lol\n");
-	return (NULL);
-}
-
-
-
-int	main(int argc, char **argv)
-{
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
-	{
-		printf("Invalid arguments\n");
+	if (!ft_print_strarr(arr, len, null_terminated))
 		return (0);
-	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	if (!ft_ptstrfd_s("\n", 1))
+		return (0);
+	return (1);
 }

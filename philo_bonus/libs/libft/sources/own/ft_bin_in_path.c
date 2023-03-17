@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_bin_in_path.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+/*
+ * Checks if a binary is found in a given path.
+ * */
+int	ft_bin_in_path(const char *binname, const char *path)
 {
-	printf("lol\n");
-	return (NULL);
-}
+	char	*full_path;
 
-
-
-int	main(int argc, char **argv)
-{
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
+	full_path = ft_joinpaths(path, binname, NULL);
+	if (!full_path)
+		return (0);
+	if (!ft_file_exists(full_path))
 	{
-		printf("Invalid arguments\n");
+		free(full_path);
 		return (0);
 	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	if (!ft_file_isex(full_path))
+	{
+		free(full_path);
+		return (0);
+	}
+	free(full_path);
+	return (1);
 }

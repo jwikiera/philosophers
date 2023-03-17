@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strarrjoin.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,47 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+static int	add_arr(t_list **lst, char **arr)
 {
-	printf("lol\n");
-	return (NULL);
+	char	*tempdup;
+	size_t	i;
+
+	i = 0;
+	while (i < ft_strarrlen(arr))
+	{
+		tempdup = ft_strdup(arr[i]);
+		if (!tempdup)
+		{
+			ft_lstclear(lst, ft_delnode);
+			return (0);
+		}
+		if (!ft_lstadd_str(tempdup, lst))
+		{
+			free(tempdup);
+			ft_lstclear(lst, ft_delnode);
+			return (0);
+		}
+		i ++;
+	}
+	return (1);
 }
 
-
-
-int	main(int argc, char **argv)
+/* joins two NULL terminated string arrays */
+char	**ft_strarrjoin(char **arr1, char **arr2)
 {
-	t_philo	philo;
+	t_list	*lst;
+	char	**res;
 
-	if (!args_valid(argc, argv))
-	{
-		printf("Invalid arguments\n");
-		return (0);
-	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	if (!arr1 || !arr2)
+		return (NULL);
+	lst = NULL;
+	if (!add_arr(&lst, arr1))
+		return (NULL);
+	if (!add_arr(&lst, arr2))
+		return (NULL);
+	res = ft_tlst_to_strarr(lst);
+	ft_lstclear(&lst, ft_delnode);
+	return (res);
 }

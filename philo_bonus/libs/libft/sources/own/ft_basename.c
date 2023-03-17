@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_basename.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+/* Gets base name from a path. Ex: /home/user/test -> test */
+char	*ft_basename(const char *path)
 {
-	printf("lol\n");
-	return (NULL);
-}
+	char	**split_res;
+	char	*res;
 
-
-
-int	main(int argc, char **argv)
-{
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
-	{
-		printf("Invalid arguments\n");
-		return (0);
-	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	split_res = ft_split(path, ft_getsep());
+	if (!split_res)
+		return (NULL);
+	if (ft_strarrlen(split_res) < 1)
+		return (NULL);
+	res = ft_strdup(split_res[ft_strarrlen(split_res) - 1]);
+	ft_free_split(split_res, ft_strarrlen(split_res));
+	return (res);
 }

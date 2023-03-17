@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_query_envp.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+char	*ft_query_envp(char *query, char **envp)
 {
-	printf("lol\n");
-	return (NULL);
-}
+	size_t	i;
+	char	*query_with_equal;
+	size_t	len;
 
-
-
-int	main(int argc, char **argv)
-{
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
+	query_with_equal = ft_strjoin_str_chr(query, '=');
+	if (!query_with_equal)
+		return (NULL);
+	len = ft_strlen(query_with_equal);
+	i = 0;
+	while (envp[i])
 	{
-		printf("Invalid arguments\n");
-		return (0);
+		if (!ft_strncmp(envp[i], query_with_equal, ft_strlen(query_with_equal)))
+		{
+			free(query_with_equal);
+			return (ft_strdup(envp[i] + len));
+		}
+		i ++;
 	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	free(query_with_equal);
+	return (NULL);
 }

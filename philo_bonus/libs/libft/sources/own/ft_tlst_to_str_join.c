@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_tlst_to_str_join.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,41 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+static char	*create_arr(t_list *lst, char sep)
 {
-	printf("lol\n");
-	return (NULL);
+	t_list	*iter;
+	int		i;
+	char	*res;
+
+	res = malloc(sizeof(*res) * (ft_lstsize(lst) + 1
+				+ ft_max_int(ft_lstsize(lst) - 1, 0)));
+	if (!res)
+		return (NULL);
+	iter = lst;
+	i = 0;
+	while (iter)
+	{
+		res[i] = ((char *)(iter->content))[0];
+		if (i < ft_lstsize(lst) - 1)
+		{
+			res[i + 1] = sep;
+			i += 2;
+		}
+		else
+			i ++;
+		iter = iter->next;
+	}
+	res[i] = '\0';
+	return (res);
 }
 
-
-
-int	main(int argc, char **argv)
+char	*ft_tlst_to_str_join(t_list *lst, char sep)
 {
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
-	{
-		printf("Invalid arguments\n");
-		return (0);
-	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	if (!lst)
+		return (NULL);
+	if (ft_lstsize(lst) == 0)
+		return (NULL);
+	return (create_arr(lst, sep));
 }

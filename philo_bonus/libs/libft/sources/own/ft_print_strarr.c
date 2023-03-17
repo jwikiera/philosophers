@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_print_strarr.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,48 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+static int	print_empty(void)
 {
-	printf("lol\n");
-	return (NULL);
+	if (!ft_ptstrfd_s("NULL PTR", 1))
+		return (0);
+	return (1);
 }
 
-
-
-int	main(int argc, char **argv)
+static size_t	len_from_null_terminated(char **arr)
 {
-	t_philo	philo;
+	size_t	len;
 
-	if (!args_valid(argc, argv))
-	{
-		printf("Invalid arguments\n");
+	len = 0;
+	while (arr[len])
+		len ++;
+	return (len);
+}
+
+int	ft_print_strarr(char **arr, size_t len, int null_terminated)
+{
+	size_t	i;
+
+	if (!arr)
+		return (print_empty());
+	if (null_terminated)
+		len = len_from_null_terminated(arr);
+	if (!ft_ptstrfd_s("[", 1))
 		return (0);
+	i = 0;
+	while (i < len)
+	{
+		if (!ft_ptstrfd_s(arr[i], 1))
+			return (0);
+		if (i < len - 1)
+		{
+			if (!ft_ptstrfd_s("|", 1))
+				return (0);
+		}
+		i ++;
 	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
+	if (!ft_ptstrfd_s("]", 1))
+		return (0);
+	return (1);
 }

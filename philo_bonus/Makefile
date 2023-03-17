@@ -1,4 +1,4 @@
-NAME					:= philosophers
+NAME					:= pipex
 
 UNAME_S					:= $(shell uname -s)
 
@@ -37,29 +37,41 @@ else
 endif
 
 CC						:= cc
-CFLAGS					:= -Wall -Wextra -Werror -pedantic $(OPTFLAG) $(DEVFLAGS) $(OS_FLAG) -pthread
+CFLAGS					:= -Wall -Wextra -Werror -pedantic $(OPTFLAG) $(DEVFLAGS) $(OS_FLAG)
 RM						:= rm -f
 
 LIB_DIRECTORY			:= ./libs/
 
+LIBFT					:= $(LIBFT_DIRECTORY)libft.a
+LIBFT_DIRECTORY			:= $(LIB_DIRECTORY)libft/
+LIBFT_HEADERS			:= $(LIBFT_DIRECTORY)includes/
+
+LIBPRINTF				:= $(LIBPRINTF_DIRECTORY)libftprintf.a
+LIBPRINTF_DIRECTORY		:= $(LIB_DIRECTORY)libprintf/
+LIBPRINTF_HEADERS		:= $(LIBPRINTF_DIRECTORY)includes/
+
 INCLUDE_DIR				:= ./includes/
 
 # lm: default math lib
-LIBRARIES				:= -L. $(FRAMEWORK) $(LINUX_LIBS)
-INCLUDES				:= -I$(INCLUDE_DIR) $(LINUX_INCLUDES)
+LIBRARIES				:= -lftprintf -lft -L. -L$(LIBFT_DIRECTORY) -L$(LIBPRINTF_DIRECTORY) $(FRAMEWORK) $(LINUX_LIBS)
+INCLUDES				:= -I$(LIBFT_HEADERS) -I$(LIBPRINTF_HEADERS) -I$(INCLUDE_DIR) $(LINUX_INCLUDES)
 
 SOURCES_DIRECTORY		:= ./sources/
 SOURCES_LIST			:= main.c\
-							validate_args.c\
-							util.c\
-							util2.c\
-							str_is_int.c\
-							ph_atoi_l.c\
-							strlcat.c\
-							strtrim.c\
-							init_struct.c\
-							atoi.c
-HEADER_LIST				:= philo.h
+							init.c\
+							arg_handle.c\
+							handle_files.c\
+							handle_files_heredoc.c\
+							print_util.c\
+							pipe_handler.c\
+							pipe_handler_ret.c\
+							heredoc_handler.c\
+							del_node.c\
+							pi_error.c\
+							get_heredoc_tempfile.c\
+							command_bin_handler.c\
+							heredoc_equal.c
+HEADER_LIST				:= pipex.h
 HEADER_FILES			:= $(addprefix $(INCLUDE_DIR), $(HEADER_LIST))
 
 OBJECTS_DIRECTORY		:= objects/
@@ -79,23 +91,33 @@ $(OBJECTS_DIRECTORY):
 $(OBJECTS_DIRECTORY)%.o : $(SOURCES_DIRECTORY)%.c $(HEADER_FILES)
 	$(CC) $(CFLAGS) -c $(INCLUDES) $< -o $@
 
+$(LIBFT):
+	@echo "$(NAME): Creating $(LIBFT)..."
+	@$(MAKE) -sC $(LIBFT_DIRECTORY)
 
+$(LIBPRINTF):
+	@echo "$(NAME): Creating $(LIBPRINTF)..."
+	@$(MAKE) -sC $(LIBPRINTF_DIRECTORY)
 
-$(NAME): $(OBJECTS_DIRECTORY) $(OBJECTS) $(HEADER_FILES)
+$(NAME): $(LIBFT) $(LIBPRINTF) $(OBJECTS_DIRECTORY) $(OBJECTS) $(HEADER_FILES)
 	$(CC) $(CFLAGS) $(OBJECTS) $(LIBRARIES) $(INCLUDES) -o $(NAME)
 
 
 clean:
+	$(MAKE) -sC $(LIBPRINTF_DIRECTORY) clean
+	$(MAKE) -sC $(LIBFT_DIRECTORY) clean
 	rm -rf $(OBJECTS_DIRECTORY)
 	rm -rf *.dSYM
 
 
-clean_philosophers:
+clean_pipex:
 	rm -rf $(OBJECTS_DIRECTORY)
 	rm -rf *.dSYM
 
 
 fclean: clean
+	$(MAKE) -sC $(LIBFT_DIRECTORY) fclean
+	$(MAKE) -sC $(LIBPRINTF_DIRECTORY) fclean
 	rm -f $(NAME)
 
 docker_build:
@@ -109,11 +131,16 @@ docker_clean:
 
 re: fclean all
 
-re_philo: clean_philosophers all
+re_pipex: clean_pipex all
 
 norm:
-	norminette includes/ sources/
+	norminette includes/ sources/ libs/libft/ libs/libprintf/ 
 
 funcs: $(NAME)
 	@echo "Functions used in $(NAME):"
 	nm -u $(NAME)
+
+francinette_lft:
+	cd libs/libft && cp includes/libft.h .
+	cd libs/libft && ~/francinette/tester.sh
+	cd libs/libft && rm libft.h

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_pwd_is_ex_and_no_dot.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+int	ft_pwd_is_ex(const char *binname, char **envp)
 {
-	printf("lol\n");
-	return (NULL);
-}
+	char	*pwd;
+	char	*joined;
 
-
-
-int	main(int argc, char **argv)
-{
-	t_philo	philo;
-
-	if (!args_valid(argc, argv))
+	pwd = ft_pwd(envp);
+	if (!pwd)
+		return (0);
+	joined = ft_joinpaths(pwd, binname, NULL);
+	if (!joined)
 	{
-		printf("Invalid arguments\n");
+		free(pwd);
 		return (0);
 	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
+	if (ft_file_isex(joined))
+	{
+		free(pwd);
+		free(joined);
+		return (1);
+	}
+	free(pwd);
+	free(joined);
 	return (0);
 }

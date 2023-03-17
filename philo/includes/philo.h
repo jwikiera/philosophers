@@ -12,9 +12,11 @@
 #ifndef LIBFT_H
 # define LIBFT_H
 
-#include "stdlib.h"
+# include "stdlib.h"
 # include "stdio.h"
 # include "limits.h"
+# include "pthread.h"
+# include "unistd.h"
 
 int		args_valid(int argc, char **argv);
 
@@ -26,6 +28,8 @@ typedef struct s_philo
 	int	time2sleep;
 	int	num2eat;
 }	t_philo;
+
+void	init_struct(t_philo *philo, int argc, char *argv[]);
 
 /* Util */
 size_t	strl(const char *s);

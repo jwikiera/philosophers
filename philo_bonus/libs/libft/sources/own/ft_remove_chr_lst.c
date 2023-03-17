@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_remove_chr_lst.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,38 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "libft.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep[number_of_times_each_philosopher_must_eat] */
-
-void	*routine()
+static int	lst_has_c(t_list *lst, char c)
 {
-	printf("lol\n");
-	return (NULL);
+	int	i;
+
+	i = 0;
+	while (i < ft_lstsize(lst))
+	{
+		if (((char *)ft_lst_get(lst, i)->content)[0] == c)
+			return (1);
+		i ++;
+	}
+	return (0);
 }
 
-
-
-int	main(int argc, char **argv)
+/* removes all occurences of c in a t_list */
+void	ft_remove_chr_lst(t_list **lst, char c)
 {
-	t_philo	philo;
+	int		i;
 
-	if (!args_valid(argc, argv))
+	while (lst_has_c(*lst, c))
 	{
-		printf("Invalid arguments\n");
-		return (0);
+		i = 0;
+		while (i < ft_lstsize(*lst))
+		{
+			if (((char *)ft_lst_get(*lst, i)->content)[0] == c)
+			{
+				ft_lst_rm(lst, i);
+				break ;
+			}
+			i ++;
+		}
 	}
-	init_struct(&philo, argc, argv);
-	printf("starting with number of philos %d\n", philo.phil_num);
-
-	pthread_t t1;
-	pthread_create(&t1, NULL, &routine, NULL);
-	pthread_join(t1, NULL);
-	return (0);
 }
