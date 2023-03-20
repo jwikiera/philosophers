@@ -9,6 +9,7 @@
 /*   Updated: 2022/10/11 13:36:27 by jwikiera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef LIBFT_H
 # define LIBFT_H
 
@@ -17,33 +18,60 @@
 # include "limits.h"
 # include "pthread.h"
 # include "unistd.h"
+# include "sys/time.h"
 
-int		args_valid(int argc, char **argv);
+int			args_valid(int argc, char **argv);
+
+typedef struct s_sopher
+{
+	long	time_last_eaten;
+	long	time_since_started_sleeping;
+	long	time_since_started_eating;
+}	t_sopher;
 
 typedef struct s_philo
 {
-	int	phil_num;
-	int	time2die;
-	int	time2eat;
-	int	time2sleep;
-	int	num2eat;
+	int				phil_num;
+	int				time2die;
+	int				time2eat;
+	int				time2sleep;
+	int				num2eat;
+	int				*forks;
+	pthread_mutex_t	*mutexes;
+	int				someone_died;
+	pthread_t		*ts;
 }	t_philo;
 
-void	init_struct(t_philo *philo, int argc, char *argv[]);
+typedef struct	s_arg
+{
+	int		id;
+	t_philo	*philo;
+}	t_arg;
+
+t_philo		*init_struct(int argc, char *argv[]);
+void		free_struct(t_philo *philo);
+
+/* logs */
+int			log_fork(int id);
+int			log_eating(int id);
+int			log_sleeping(int id);
+int			log_thinking(int id);
+int			log_ded(int id);
 
 /* Util */
-size_t	strl(const char *s);
-int		ph_isdigit(int c);
-int		ph_isspace(char c);
-size_t	ph_strlcpy(char *dst, const char *src, size_t dstsize);
-long	ph_atoi_l(const char *nptr);
-void	*ph_memcpy(void *dest, const void *src, size_t n);
-int		ph_get_str_sign(const char *str);
-char	*ph_strjoin(char const *s1, char const *s2);
-char	*ph_strtrim(char const *s1, char const *set);
-char	*ph_powertrim(const char *str, const char *set);
-size_t	ph_strlcat(char *dst, const char *src, size_t dstsize);
-int		ph_str_is_int(const char *str);
-int		ph_atoi(const char *nptr);
+size_t		strl(const char *s);
+int			ph_isdigit(int c);
+int			ph_isspace(char c);
+size_t		ph_strlcpy(char *dst, const char *src, size_t dstsize);
+long		ph_atoi_l(const char *nptr);
+void		*ph_memcpy(void *dest, const void *src, size_t n);
+int			ph_get_str_sign(const char *str);
+char		*ph_strjoin(char const *s1, char const *s2);
+char		*ph_strtrim(char const *s1, char const *set);
+char		*ph_powertrim(const char *str, const char *set);
+size_t		ph_strlcat(char *dst, const char *src, size_t dstsize);
+int			ph_str_is_int(const char *str);
+int			ph_atoi(const char *nptr);
+long long	timenow();
 
 #endif

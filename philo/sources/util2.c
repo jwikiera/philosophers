@@ -69,3 +69,14 @@ void	*ph_memcpy(void *dest, const void *src, size_t n)
 	}
 	return (dest);
 }
+
+long long	timenow()
+{
+	struct timeval	current_time;
+	long long		res;
+
+	if (gettimeofday(&current_time, NULL) == -1)
+		return (-1);
+	res = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
+	return (res);
+}
