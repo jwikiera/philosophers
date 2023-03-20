@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   log.c                                              :+:      :+:    :+:   */
+/*   init_sophers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,27 +12,40 @@
 
 #include "philo.h"
 
-int	log_fork(int id)
+void	free_sophers(t_sopher **sophers, int amount)
 {
-	return (printf("%lld %d has taken a fork\n", timenow(), id + 1) > 0);
+	int	i;
+
+	i = 0;
+	while (i < amount)
+	{
+		free(sophers[i]);
+		i ++;
+	}
+	free(sophers);
 }
 
-int	log_eating(int id)
+t_sopher	**init_sophers(int amount)
 {
-	return (printf("%lld %d is eating\n", timenow(), id + 1) > 0);
-}
+	t_sopher	**res;
+	int			i;
 
-int	log_sleeping(int id)
-{
-	return (printf("%lld %d is sleeping\n", timenow(), id + 1) > 0);
-}
-
-int	log_thinking(int id)
-{
-	return (printf("%lld %d is thinking\n", timenow(), id + 1) > 0);
-}
-
-int	log_ded(int id)
-{
-	return (printf("%lld %d died\n", timenow(), id + 1) > 0);
+	res = malloc(sizeof(*res) * amount);
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (i < amount)
+	{
+		res[i] = malloc(sizeof(**res));
+		if (!res[i])
+		{
+			free_sophers(res, i);
+			return (NULL);
+		}
+		res[i]->time_last_eaten = 0;
+		res[i]->time_since_started_eating = 0;
+		res[i]->time_since_started_sleeping = 0;
+		i ++;
+	}
+	return (res);
 }

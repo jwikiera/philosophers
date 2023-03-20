@@ -58,8 +58,10 @@ SOURCES_LIST			:= main.c\
 							strlcat.c\
 							strtrim.c\
 							init_struct.c\
+							init_sophers.c\
 							atoi.c\
-							log.c
+							log.c\
+							get_fork_status.c
 HEADER_LIST				:= philo.h
 HEADER_FILES			:= $(addprefix $(INCLUDE_DIR), $(HEADER_LIST))
 

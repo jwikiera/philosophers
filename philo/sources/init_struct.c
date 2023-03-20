@@ -67,6 +67,15 @@ t_philo	*init_struct(int argc, char *argv[])
 		free(philo);
 		return (NULL);
 	}
+	philo->sophers = init_sophers(philo->phil_num);
+	if (!philo->sophers)
+	{
+		free(philo->forks);
+		free(philo->mutexes);
+		free(philo->ts);
+		free(philo);
+		return (NULL);
+	}
 	philo->someone_died = 0;
 	return (philo);
 }
@@ -78,4 +87,6 @@ void	free_struct(t_philo *philo)
 	for (int i = 0; i < philo->phil_num; ++i) {
 		pthread_mutex_destroy(&(philo->mutexes[i]));
 	}
+	free_sophers(philo->sophers, philo->phil_num);
+	free(philo);
 }

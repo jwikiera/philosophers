@@ -40,6 +40,7 @@ typedef struct s_philo
 	pthread_mutex_t	*mutexes;
 	int				someone_died;
 	pthread_t		*ts;
+	t_sopher		**sophers;
 }	t_philo;
 
 typedef struct	s_arg
@@ -50,6 +51,8 @@ typedef struct	s_arg
 
 t_philo		*init_struct(int argc, char *argv[]);
 void		free_struct(t_philo *philo);
+t_sopher	**init_sophers(int amount);
+void		free_sophers(t_sopher **sophers, int amount);
 
 /* logs */
 int			log_fork(int id);

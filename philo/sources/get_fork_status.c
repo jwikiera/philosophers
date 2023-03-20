@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   log.c                                              :+:      :+:    :+:   */
+/*   get_fork_status.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,27 +12,7 @@
 
 #include "philo.h"
 
-int	log_fork(int id)
+int	fork_status_left(t_philo *philo, int id)
 {
-	return (printf("%lld %d has taken a fork\n", timenow(), id + 1) > 0);
-}
 
-int	log_eating(int id)
-{
-	return (printf("%lld %d is eating\n", timenow(), id + 1) > 0);
-}
-
-int	log_sleeping(int id)
-{
-	return (printf("%lld %d is sleeping\n", timenow(), id + 1) > 0);
-}
-
-int	log_thinking(int id)
-{
-	return (printf("%lld %d is thinking\n", timenow(), id + 1) > 0);
-}
-
-int	log_ded(int id)
-{
-	return (printf("%lld %d died\n", timenow(), id + 1) > 0);
 }
