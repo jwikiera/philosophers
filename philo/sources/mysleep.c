@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   log.c                                              :+:      :+:    :+:   */
+/*   mysleep.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,35 +12,11 @@
 
 #include "philo.h"
 
-int	log_fork(int id)
+void	mysleep(long long amount)
 {
-	return (printf("%lld %d has taken a fork\n", timenow(), id + 1) > 0);
-}
+	long long	wake_time;
 
-int	log_fork_dir(int id, int dir)
-{
-	if (dir == 0)
-		return (printf("%lld %d has taken left fork\n", timenow(), id + 1) > 0);
-	else
-		return (printf("%lld %d has taken right fork\n", timenow(), id + 1) > 0);
-}
-
-int	log_eating(int id)
-{
-	return (printf("%lld %d is eating\n", timenow(), id + 1) > 0);
-}
-
-int	log_sleeping(int id)
-{
-	return (printf("%lld %d is sleeping\n", timenow(), id + 1) > 0);
-}
-
-int	log_thinking(int id)
-{
-	return (printf("%lld %d is thinking\n", timenow(), id + 1) > 0);
-}
-
-int	log_ded(int id)
-{
-	return (printf("%lld %d died\n", timenow(), id + 1) > 0);
+	wake_time = timenow() + amount;
+	while (timenow() < wake_time)
+		usleep(5);
 }

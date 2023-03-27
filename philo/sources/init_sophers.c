@@ -42,9 +42,11 @@ t_sopher	**init_sophers(int amount)
 			free_sophers(res, i);
 			return (NULL);
 		}
-		res[i]->time_last_eaten = 0;
-		res[i]->time_since_started_eating = 0;
-		res[i]->time_since_started_sleeping = 0;
+		res[i]->time_last_eaten = timenow();
+		res[i]->time_when_started_eating = 0;
+		res[i]->time_when_started_sleeping = 0;
+		res[i]->is_eating = 0;
+		res[i]->is_sleeping = 0;
 		i ++;
 	}
 	return (res);

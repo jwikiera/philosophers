@@ -61,7 +61,8 @@ SOURCES_LIST			:= main.c\
 							init_sophers.c\
 							atoi.c\
 							log.c\
-							get_fork_status.c
+							get_fork_status.c\
+							mysleep.c
 HEADER_LIST				:= philo.h
 HEADER_FILES			:= $(addprefix $(INCLUDE_DIR), $(HEADER_LIST))
 

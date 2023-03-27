@@ -25,8 +25,10 @@ int			args_valid(int argc, char **argv);
 typedef struct s_sopher
 {
 	long	time_last_eaten;
-	long	time_since_started_sleeping;
-	long	time_since_started_eating;
+	long	time_when_started_sleeping;
+	long	time_when_started_eating;
+	int		is_eating;
+	int		is_sleeping;
 }	t_sopher;
 
 typedef struct s_philo
@@ -53,6 +55,9 @@ t_philo		*init_struct(int argc, char *argv[]);
 void		free_struct(t_philo *philo);
 t_sopher	**init_sophers(int amount);
 void		free_sophers(t_sopher **sophers, int amount);
+int			fork_status_left(t_philo *philo, int id);
+int			fork_status_right(t_philo *philo, int id);
+int			get_index(t_philo *philo, int id, int direction);
 
 /* logs */
 int			log_fork(int id);
@@ -60,6 +65,7 @@ int			log_eating(int id);
 int			log_sleeping(int id);
 int			log_thinking(int id);
 int			log_ded(int id);
+int			log_fork_dir(int id, int dir);
 
 /* Util */
 size_t		strl(const char *s);
@@ -76,5 +82,6 @@ size_t		ph_strlcat(char *dst, const char *src, size_t dstsize);
 int			ph_str_is_int(const char *str);
 int			ph_atoi(const char *nptr);
 long long	timenow();
+void		mysleep(long long amount);
 
 #endif
