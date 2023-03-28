@@ -14,7 +14,7 @@
 
 /* returns the index to the given side of a philosopher */
 /* 0 is left, 1 is right */
-int	get_index(t_philo *philo, int id, int direction)
+/*int	get_index(t_philo *philo, int id, int direction)
 {
 	int	res;
 
@@ -22,6 +22,18 @@ int	get_index(t_philo *philo, int id, int direction)
 		res = ((id - 1) % philo->phil_num);
 	else
 		res = ((id + 1) % philo->phil_num);
+	if (res == -1)
+		res = philo->phil_num - 1;
+	return (res);
+}*/
+int	get_index(t_philo *philo, int id, int direction)
+{
+	int	res;
+
+	if (direction == 0)
+		res = ((id - 1) % philo->phil_num);
+	else
+		res = id;
 	if (res == -1)
 		res = philo->phil_num - 1;
 	return (res);

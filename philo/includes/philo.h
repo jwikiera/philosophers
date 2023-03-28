@@ -65,7 +65,7 @@ int			log_eating(int id);
 int			log_sleeping(int id);
 int			log_thinking(int id);
 int			log_ded(int id);
-int			log_fork_dir(int id, int dir);
+int			log_fork_dir(int id, int dir, int fork_id);
 
 /* Util */
 size_t		strl(const char *s);

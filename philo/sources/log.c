@@ -17,12 +17,12 @@ int	log_fork(int id)
 	return (printf("%lld %d has taken a fork\n", timenow(), id + 1) > 0);
 }
 
-int	log_fork_dir(int id, int dir)
+int	log_fork_dir(int id, int dir, int fork_id)
 {
 	if (dir == 0)
-		return (printf("%lld %d has taken left fork\n", timenow(), id + 1) > 0);
+		return (printf("%lld %d has taken left fork (%d)\n", timenow(), id + 1, fork_id) > 0);
 	else
-		return (printf("%lld %d has taken right fork\n", timenow(), id + 1) > 0);
+		return (printf("%lld %d has taken right fork (%d)\n", timenow(), id + 1, fork_id) > 0);
 }
 
 int	log_eating(int id)
