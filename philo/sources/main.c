@@ -23,62 +23,36 @@ void	*routine(void *arg_)
 	arg = arg_;
 	philo = arg->philo;
 
-	printf("lol from philo %d\n", arg->id + 1);
-	while (!philo->someone_died)
+	//printf("lol from philo %d\n", arg->id + 1);
+
+	while (!philo->someone_died && (!(philo->num2eat > -1) || (philo->num2eat > -1 && philo->sophers[arg->id]->eat_count < philo->num2eat)))
 	{
 		if (!philo->sophers[arg->id]->is_eating && !philo->sophers[arg->id]->is_sleeping)
 		{
-			//fprintf(stderr, "%d bruh\n", arg->id);
-			/*if (fork_status_left(philo, arg->id) == 0 && fork_status_right(philo, arg->id) == 0)
-			{
-				pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 0)]);
-				//pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 1)]);
-				philo->forks[get_index(philo, arg->id, 0)] = 1;
-				log_fork_dir(arg->id, 0);
-
-				if (fork_status_right(philo, arg->id) == 0)
-				{
-					pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 1)]);
-					philo->forks[get_index(philo, arg->id, 1)] = 1;
-					log_fork_dir(arg->id, 1);
-					log_eating(arg->id);
-					philo->sophers[arg->id]->is_eating = 1;
-					philo->sophers[arg->id]->time_when_started_eating = timenow();
-					mysleep(philo->time2eat);
-					philo->sophers[arg->id]->time_last_eaten = timenow();
-					philo->forks[get_index(philo, arg->id, 0)] = 0;
-					philo->forks[get_index(philo, arg->id, 1)] = 0;
-					pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 1)]);
-					pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 0)]);
-				}
-				else
-				{
-					fprintf(stderr, "right fork is blocked, removing lock on left from philosopher %d\n",
-							arg->id);
-					philo->forks[get_index(philo, arg->id, 0)] = 0;
-					pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 0)]);
-				}
-			}*/
 			if (arg->id != 0)
 			{
-				fprintf(stderr, "3bruhhh, %d\n", arg->id + 1);
 				//taking left fork, happens second
 				pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 0)]);
-				philo->forks[get_index(philo, arg->id, 0)] = 1;
-				log_fork_dir(arg->id, 0, get_index(philo, arg->id, 0));
+				log_fork(arg->id);
 
 				//taking right fork
 				pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 1)]);
-				philo->forks[get_index(philo, arg->id, 1)] = 1;
-				log_fork_dir(arg->id, 1, -1);
+				log_fork(arg->id);
 
 				log_eating(arg->id);
+
 				philo->sophers[arg->id]->is_eating = 1;
 				philo->sophers[arg->id]->time_when_started_eating = timenow();
+
+				philo->sophers[arg->id]->eat_count++;
+				if (philo->sophers[arg->id]->eat_count == philo->num2eat)
+					philo->philos_done_eating++;
+
 				mysleep(philo->time2eat);
 				philo->sophers[arg->id]->time_last_eaten = timenow();
-				philo->forks[get_index(philo, arg->id, 0)] = 0;
-				philo->forks[get_index(philo, arg->id, 1)] = 0;
+
+
+
 				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 1)]);
 				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 0)]);
 
@@ -86,23 +60,26 @@ void	*routine(void *arg_)
 			else
 			{
 				//taking right fork, happens first
-				fprintf(stderr, "2bruhhh, %d\n", arg->id + 1);
 				pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 1)]);
-				philo->forks[get_index(philo, arg->id, 1)] = 1;
-				log_fork_dir(arg->id, 1, get_index(philo, arg->id, 1));
+				log_fork(arg->id);
 
 				//taking left fork
 				pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 0)]);
-				philo->forks[get_index(philo, arg->id, 0)] = 1;
-				log_fork_dir(arg->id, 0, -3);
+				log_fork(arg->id);
 
 				log_eating(arg->id);
+
 				philo->sophers[arg->id]->is_eating = 1;
 				philo->sophers[arg->id]->time_when_started_eating = timenow();
+
+				philo->sophers[arg->id]->eat_count++;
+				if (philo->sophers[arg->id]->eat_count == philo->num2eat)
+					philo->philos_done_eating++;
+
 				mysleep(philo->time2eat);
 				philo->sophers[arg->id]->time_last_eaten = timenow();
-				philo->forks[get_index(philo, arg->id, 1)] = 0;
-				philo->forks[get_index(philo, arg->id, 0)] = 0;
+
+
 				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 0)]);
 				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 1)]);
 
@@ -112,7 +89,7 @@ void	*routine(void *arg_)
 		if (philo->sophers[arg->id]->is_eating && (timenow() - philo->sophers[arg->id]->time_when_started_eating)
 		>= philo->time2eat)
 		{
-			log_sleeping(arg->id);
+			log_sleeping(philo, arg->id);
 			philo->sophers[arg->id]->is_eating = 0;
 			philo->sophers[arg->id]->is_sleeping = 1;
 			philo->sophers[arg->id]->time_when_started_sleeping = timenow();
@@ -142,13 +119,15 @@ int	main(int argc, char **argv)
 	philo = init_struct(argc, argv);
 	if (!philo)
 		return (1);
+	if (philo->phil_num < 1)
+		return (0);
 
 	/*fprintf(stderr, "0, left: %d\n", get_index(philo, 0, 0));
 	fprintf(stderr, "0, right: %d\n", get_index(philo, 0, 1));
 	fprintf(stderr, "1, left: %d\n", get_index(philo, 1, 0));
 	fprintf(stderr, "1, right: %d\n", get_index(philo, 1, 1));*/
 
-	printf("starting with number of philos %d\n", philo->phil_num);
+	//printf("starting with number of philos %d\n", philo->phil_num);
 	arg = malloc(sizeof(arg) * philo->phil_num);
 	if (!arg)
 	{
@@ -161,7 +140,7 @@ int	main(int argc, char **argv)
 		pthread_create(&(philo->ts[i]), NULL, &routine, &arg[i]);
 		//mysleep(500);
 	}
-	while (!philo->someone_died)
+	while (!philo->someone_died && (!(philo->num2eat > -1) || (philo->num2eat > -1 && philo->philos_done_eating < philo->phil_num)))
 	{
 		for (int i = 0; i < philo->phil_num; ++i) {
 			if (!philo->someone_died && (timenow() - philo->sophers[i]->time_last_eaten) > philo->time2die)

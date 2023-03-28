@@ -37,23 +37,15 @@ t_philo	*init_struct(int argc, char *argv[])
 		philo->num2eat = ph_atoi(argv[5]);
 	else
 		philo->num2eat = -1;
-	philo->forks = malloc(sizeof(*(philo->forks)) * philo->phil_num);
-	if (!philo->forks)
-	{
-		free(philo);
-		return (NULL);
-	}
 	philo->mutexes = malloc(sizeof(pthread_mutex_t) * philo->phil_num);
 	if (!philo->mutexes)
 	{
-		free(philo->forks);
 		free(philo);
 		return (NULL);
 	}
 	for (int i = 0; i < philo->phil_num; ++i) {
 		if (pthread_mutex_init(&(philo->mutexes[i]), NULL) != 0)
 		{
-			free(philo->forks);
 			free(philo->mutexes);
 			free(philo);
 			return (NULL);
@@ -62,7 +54,6 @@ t_philo	*init_struct(int argc, char *argv[])
 	philo->ts = alloc_ts(philo->phil_num);
 	if (!philo->ts)
 	{
-		free(philo->forks);
 		free(philo->mutexes);
 		free(philo);
 		return (NULL);
@@ -70,7 +61,6 @@ t_philo	*init_struct(int argc, char *argv[])
 	philo->sophers = init_sophers(philo->phil_num);
 	if (!philo->sophers)
 	{
-		free(philo->forks);
 		free(philo->mutexes);
 		free(philo->ts);
 		free(philo);
@@ -82,11 +72,11 @@ t_philo	*init_struct(int argc, char *argv[])
 
 void	free_struct(t_philo *philo)
 {
-	free(philo->forks);
 	free(philo->ts);
 	for (int i = 0; i < philo->phil_num; ++i) {
 		pthread_mutex_destroy(&(philo->mutexes[i]));
 	}
 	free_sophers(philo->sophers, philo->phil_num);
+	free(philo->mutexes);
 	free(philo);
 }

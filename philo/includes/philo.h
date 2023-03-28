@@ -29,6 +29,7 @@ typedef struct s_sopher
 	long	time_when_started_eating;
 	int		is_eating;
 	int		is_sleeping;
+	int		eat_count;
 }	t_sopher;
 
 typedef struct s_philo
@@ -38,11 +39,11 @@ typedef struct s_philo
 	int				time2eat;
 	int				time2sleep;
 	int				num2eat;
-	int				*forks;
 	pthread_mutex_t	*mutexes;
 	int				someone_died;
 	pthread_t		*ts;
 	t_sopher		**sophers;
+	int				philos_done_eating;
 }	t_philo;
 
 typedef struct	s_arg
@@ -62,7 +63,7 @@ int			get_index(t_philo *philo, int id, int direction);
 /* logs */
 int			log_fork(int id);
 int			log_eating(int id);
-int			log_sleeping(int id);
+int			log_sleeping(t_philo *philo, int id);
 int			log_thinking(int id);
 int			log_ded(int id);
 int			log_fork_dir(int id, int dir, int fork_id);

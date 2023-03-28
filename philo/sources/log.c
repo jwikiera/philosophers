@@ -30,8 +30,10 @@ int	log_eating(int id)
 	return (printf("%lld %d is eating\n", timenow(), id + 1) > 0);
 }
 
-int	log_sleeping(int id)
+int	log_sleeping(t_philo *philo, int id)
 {
+	if (philo->philos_done_eating == philo->phil_num)
+		return (1);
 	return (printf("%lld %d is sleeping\n", timenow(), id + 1) > 0);
 }
 

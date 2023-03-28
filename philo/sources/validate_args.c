@@ -21,7 +21,7 @@ int	args_valid(int argc, char **argv)
 	i = 1;
 	while (i < argc)
 	{
-		if (!ph_str_is_int(argv[i]))
+		if (!ph_str_is_int(argv[i]) || ph_atoi(argv[i]) < 0)
 			return (0);
 		i ++;
 	}
