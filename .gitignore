@@ -2,10 +2,9 @@
 **/*.o
 **/*.a
 objects
+**/objects
 **/*.dylib
 **/*.swp
-**/push_swap
-**/checker
 *.swiftdoc
 *.swiftmodule
 *.dSYM
@@ -18,12 +17,5 @@ venv
 venv/
 venv/*
 builds/*
-**/pipex
-file1
-file2
-pipex_heredoc_temp*
-PIPEX_TESTER
-PIPEX_TESTER/*
-pipexMedic
-pipexMedic/*
-test_prog
+philosophers
+**/philosophers
