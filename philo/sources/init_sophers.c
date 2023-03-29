@@ -47,6 +47,7 @@ t_sopher	**init_sophers(int amount)
 		res[i]->time_when_started_sleeping = 0;
 		res[i]->is_eating = 0;
 		res[i]->is_sleeping = 0;
+		res[i]->eat_count = 0;
 		i ++;
 	}
 	return (res);

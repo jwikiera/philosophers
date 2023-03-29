@@ -22,6 +22,7 @@ static pthread_t	*alloc_ts(int num)
 	return (res);
 }
 
+//TODO: need to destroy mutexes if some allocation fails
 t_philo	*init_struct(int argc, char *argv[])
 {
 	t_philo	*philo;
@@ -51,6 +52,30 @@ t_philo	*init_struct(int argc, char *argv[])
 			return (NULL);
 		}
 	}
+	if (pthread_mutex_init(&(philo->sophers_mutex), NULL) != 0)
+	{
+		free(philo->mutexes);
+		free(philo);
+		return (NULL);
+	}
+	if (pthread_mutex_init(&(philo->death_mutex), NULL) != 0)
+	{
+		free(philo->mutexes);
+		free(philo);
+		return (NULL);
+	}
+	if (pthread_mutex_init(&(philo->done_eating_mutex), NULL) != 0)
+	{
+		free(philo->mutexes);
+		free(philo);
+		return (NULL);
+	}
+	if (pthread_mutex_init(&(philo->print_mutex), NULL) != 0)
+	{
+		free(philo->mutexes);
+		free(philo);
+		return (NULL);
+	}
 	philo->ts = alloc_ts(philo->phil_num);
 	if (!philo->ts)
 	{
@@ -76,6 +101,10 @@ void	free_struct(t_philo *philo)
 	for (int i = 0; i < philo->phil_num; ++i) {
 		pthread_mutex_destroy(&(philo->mutexes[i]));
 	}
+	pthread_mutex_destroy(&(philo->sophers_mutex));
+	pthread_mutex_destroy(&(philo->death_mutex));
+	pthread_mutex_destroy(&(philo->done_eating_mutex));
+	pthread_mutex_destroy(&(philo->print_mutex));
 	free_sophers(philo->sophers, philo->phil_num);
 	free(philo->mutexes);
 	free(philo);

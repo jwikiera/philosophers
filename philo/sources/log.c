@@ -12,9 +12,14 @@
 
 #include "philo.h"
 
-int	log_fork(int id)
+int	log_fork(t_philo *philo, int id)
 {
-	return (printf("%lld %d has taken a fork\n", timenow(), id + 1) > 0);
+	if (get_someone_died(philo))
+		return (1);
+	pthread_mutex_lock(&philo->print_mutex);
+	printf("%lld %d has taken a fork\n", timenow(), id + 1);
+	pthread_mutex_unlock(&philo->print_mutex);
+	return (1);
 }
 
 int	log_fork_dir(int id, int dir, int fork_id)
@@ -25,24 +30,44 @@ int	log_fork_dir(int id, int dir, int fork_id)
 		return (printf("%lld %d has taken right fork (%d)\n", timenow(), id + 1, fork_id) > 0);
 }
 
-int	log_eating(int id)
+int	log_eating(t_philo *philo, int id)
 {
-	return (printf("%lld %d is eating\n", timenow(), id + 1) > 0);
+	if (get_someone_died(philo))
+		return (1);
+	pthread_mutex_lock(&philo->print_mutex);
+	printf("%lld %d is eating\n", timenow(), id + 1);
+	pthread_mutex_unlock(&philo->print_mutex);
+	return (1);
 }
 
 int	log_sleeping(t_philo *philo, int id)
 {
-	if (philo->philos_done_eating == philo->phil_num)
+	if (get_done_eating(philo) == philo->phil_num)
 		return (1);
-	return (printf("%lld %d is sleeping\n", timenow(), id + 1) > 0);
+	if (get_someone_died(philo))
+		return (1);
+	pthread_mutex_lock(&philo->print_mutex);
+	printf("%lld %d is sleeping\n", timenow(), id + 1);
+	pthread_mutex_unlock(&philo->print_mutex);
+	return (1);
 }
 
-int	log_thinking(int id)
+int	log_thinking(t_philo *philo, int id)
 {
-	return (printf("%lld %d is thinking\n", timenow(), id + 1) > 0);
+	if (get_someone_died(philo))
+		return (1);
+	pthread_mutex_lock(&philo->print_mutex);
+	printf("%lld %d is thinking\n", timenow(), id + 1);
+	pthread_mutex_unlock(&philo->print_mutex);
+	return (1);
 }
 
-int	log_ded(int id)
+int	log_ded(t_philo *philo, int id)
 {
-	return (printf("%lld %d died\n", timenow(), id + 1) > 0);
+	if (get_someone_died(philo))
+		return (1);
+	pthread_mutex_lock(&philo->print_mutex);
+	printf("%lld %d died\n", timenow(), id + 1);
+	pthread_mutex_unlock(&philo->print_mutex);
+	return (1);
 }

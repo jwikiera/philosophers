@@ -22,8 +22,14 @@ else
 	FSANADDRESS			:=
 endif
 
+ifdef santhread
+	FSANTHREAD			:= -fsanitize=thread
+else
+	FSANTHREAD			:=
+endif
+
 ifndef fsanitizeoff
-	FSANITIZE			:= -fno-omit-frame-pointer -fstack-protector-all $(FSANADDRESS) $(FSANITIZELEAK)
+	FSANITIZE			:= -fno-omit-frame-pointer -fstack-protector-all $(FSANADDRESS) $(FSANITIZELEAK) $(FSANTHREAD)
 else
 	FSANITIZE			:=
 endif
@@ -62,7 +68,8 @@ SOURCES_LIST			:= main.c\
 							atoi.c\
 							log.c\
 							get_fork_status.c\
-							mysleep.c
+							mysleep.c\
+							mutex_getters.c
 HEADER_LIST				:= philo.h
 HEADER_FILES			:= $(addprefix $(INCLUDE_DIR), $(HEADER_LIST))
 

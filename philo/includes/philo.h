@@ -44,6 +44,10 @@ typedef struct s_philo
 	pthread_t		*ts;
 	t_sopher		**sophers;
 	int				philos_done_eating;
+	pthread_mutex_t	sophers_mutex;
+	pthread_mutex_t	death_mutex;
+	pthread_mutex_t	done_eating_mutex;
+	pthread_mutex_t	print_mutex;
 }	t_philo;
 
 typedef struct	s_arg
@@ -61,12 +65,17 @@ int			fork_status_right(t_philo *philo, int id);
 int			get_index(t_philo *philo, int id, int direction);
 
 /* logs */
-int			log_fork(int id);
-int			log_eating(int id);
+int			log_fork(t_philo *philo, int id);
+int			log_eating(t_philo *philo, int id);
 int			log_sleeping(t_philo *philo, int id);
-int			log_thinking(int id);
-int			log_ded(int id);
+int			log_thinking(t_philo *philo, int id);
+int			log_ded(t_philo *philo, int id);
 int			log_fork_dir(int id, int dir, int fork_id);
+
+/* mutex getters */
+int			get_done_eating(t_philo *philo);
+int			get_someone_died(t_philo *philo);
+long		get_time_last_eaten(t_philo *philo, int id);
 
 /* Util */
 size_t		strl(const char *s);
