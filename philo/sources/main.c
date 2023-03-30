@@ -44,6 +44,10 @@ void	*routine(void *arg_)
 				philo->sophers[arg->id]->is_eating = 1;
 				philo->sophers[arg->id]->time_when_started_eating = timenow();
 
+				pthread_mutex_lock(&philo->sophers_mutex);
+				philo->sophers[arg->id]->time_last_eaten = timenow() + philo->time2eat;
+				pthread_mutex_unlock(&philo->sophers_mutex);
+
 				mysleep(philo->time2eat);
 				philo->sophers[arg->id]->eat_count++;
 				pthread_mutex_lock(&philo->done_eating_mutex);
@@ -75,6 +79,10 @@ void	*routine(void *arg_)
 				philo->sophers[arg->id]->is_eating = 1;
 				philo->sophers[arg->id]->time_when_started_eating = timenow();
 
+				pthread_mutex_lock(&philo->sophers_mutex);
+				philo->sophers[arg->id]->time_last_eaten = timenow() + philo->time2eat;
+				pthread_mutex_unlock(&philo->sophers_mutex);
+
 				mysleep(philo->time2eat);
 				philo->sophers[arg->id]->eat_count++;
 				pthread_mutex_lock(&philo->done_eating_mutex);
@@ -82,11 +90,6 @@ void	*routine(void *arg_)
 					philo->philos_done_eating++;
 				pthread_mutex_unlock(&philo->done_eating_mutex);
 				//fprintf(stderr, "philo %d has eaten %d times now (max is %d)\n", arg->id, philo->sophers[arg->id]->eat_count, philo->num2eat);
-
-				//need to lock
-				pthread_mutex_lock(&philo->sophers_mutex);
-				philo->sophers[arg->id]->time_last_eaten = timenow();
-				pthread_mutex_unlock(&philo->sophers_mutex);
 
 				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 0)]);
 				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 1)]);
