@@ -25,7 +25,7 @@ void	*routine(void *arg_)
 
 	//printf("lol from philo %d\n", arg->id + 1);
 
-	while (!get_someone_died(philo) && (!(philo->num2eat > -1) || (philo->num2eat > -1 && philo->sophers[arg->id]->eat_count < philo->num2eat)))
+	while (!get_someone_died(philo))// && (!(philo->num2eat > -1) || (philo->num2eat > -1 && philo->sophers[arg->id]->eat_count < philo->num2eat)))// && philo->sophers[arg->id]->eat_count < philo->num2eat)
 	{
 		if (!philo->sophers[arg->id]->is_eating && !philo->sophers[arg->id]->is_sleeping)
 		{
@@ -45,7 +45,7 @@ void	*routine(void *arg_)
 				philo->sophers[arg->id]->time_when_started_eating = timenow();
 
 				pthread_mutex_lock(&philo->sophers_mutex);
-				philo->sophers[arg->id]->time_last_eaten = timenow() + philo->time2eat;
+				philo->sophers[arg->id]->time_last_eaten = timenow();// + philo->time2eat;
 				pthread_mutex_unlock(&philo->sophers_mutex);
 
 				mysleep(philo->time2eat);
@@ -54,7 +54,7 @@ void	*routine(void *arg_)
 				if (philo->sophers[arg->id]->eat_count == philo->num2eat)
 					philo->philos_done_eating++;
 				pthread_mutex_unlock(&philo->done_eating_mutex);
-				//fprintf(stderr, "philo %d has eaten %d times now (max is %d)\n", arg->id, philo->sophers[arg->id]->eat_count, philo->num2eat);
+				//fprintf(stderr, "philo %d has eaten %d times now (max is %d)\n", arg->id + 1, philo->sophers[arg->id]->eat_count, philo->num2eat);
 
 				pthread_mutex_lock(&philo->sophers_mutex);
 				philo->sophers[arg->id]->time_last_eaten = timenow();
@@ -80,7 +80,7 @@ void	*routine(void *arg_)
 				philo->sophers[arg->id]->time_when_started_eating = timenow();
 
 				pthread_mutex_lock(&philo->sophers_mutex);
-				philo->sophers[arg->id]->time_last_eaten = timenow() + philo->time2eat;
+				philo->sophers[arg->id]->time_last_eaten = timenow();// + philo->time2eat;
 				pthread_mutex_unlock(&philo->sophers_mutex);
 
 				mysleep(philo->time2eat);
@@ -89,7 +89,7 @@ void	*routine(void *arg_)
 				if (philo->sophers[arg->id]->eat_count == philo->num2eat)
 					philo->philos_done_eating++;
 				pthread_mutex_unlock(&philo->done_eating_mutex);
-				//fprintf(stderr, "philo %d has eaten %d times now (max is %d)\n", arg->id, philo->sophers[arg->id]->eat_count, philo->num2eat);
+				//fprintf(stderr, "philo %d has eaten %d times now (max is %d)\n", arg->id + 1, philo->sophers[arg->id]->eat_count, philo->num2eat);
 
 				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 0)]);
 				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 1)]);
@@ -151,17 +151,27 @@ int	main(int argc, char **argv)
 		pthread_create(&(philo->ts[i]), NULL, &routine, &arg[i]);
 	}
 
-	while (!get_someone_died(philo) && (!(philo->num2eat > -1) || (philo->num2eat > -1 && get_done_eating(philo) < philo->phil_num)))
+	while (!get_someone_died(philo) /*&& (!(philo->num2eat > -1) || (philo->num2eat > -1 && get_done_eating(philo) < philo->phil_num))*/)
 	{
-		for (int i = 0; i < philo->phil_num; ++i) {
-			if (!get_someone_died(philo) && (timenow() - get_time_last_eaten(philo, i)) > philo->time2die)
-			{
-				log_ded(philo, i);
-				pthread_mutex_lock(&philo->death_mutex);
-				philo->someone_died = 1;
-				pthread_mutex_unlock(&philo->death_mutex);
+		if (philo->num2eat > -1 && get_done_eating(philo) == philo->phil_num)
+		{
+			pthread_mutex_lock(&philo->death_mutex);
+			philo->someone_died = 1;
+			pthread_mutex_unlock(&philo->death_mutex);
+		}
+		else
+		{
+			for (int i = 0; i < philo->phil_num; ++i) {
+				if (!get_someone_died(philo) && (timenow() - get_time_last_eaten(philo, i)) > philo->time2die)
+				{
+					log_ded(philo, i);
+					pthread_mutex_lock(&philo->death_mutex);
+					philo->someone_died = 1;
+					pthread_mutex_unlock(&philo->death_mutex);
+				}
 			}
 		}
+
 	}
 	for (int i = 0; i < philo->phil_num; ++i) {
 		pthread_join((philo->ts[i]), NULL);
