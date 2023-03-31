@@ -30,6 +30,8 @@ typedef struct s_sopher
 	int		is_eating;
 	int		is_sleeping;
 	int		eat_count;
+	int		fuse;
+	int		self_launched;
 }	t_sopher;
 
 typedef struct s_philo
@@ -48,6 +50,10 @@ typedef struct s_philo
 	pthread_mutex_t	death_mutex;
 	pthread_mutex_t	done_eating_mutex;
 	pthread_mutex_t	print_mutex;
+	int				spawning_done;
+	long long		t0;
+	int				spawn_count;
+	int				spawn_count_copy;
 }	t_philo;
 
 typedef struct	s_arg
@@ -91,7 +97,7 @@ char		*ph_powertrim(const char *str, const char *set);
 size_t		ph_strlcat(char *dst, const char *src, size_t dstsize);
 int			ph_str_is_int(const char *str);
 int			ph_atoi(const char *nptr);
-long long	timenow();
+long long	timenow(t_philo *philo);
 void		mysleep(long long amount);
 
 #endif

@@ -38,6 +38,9 @@ t_philo	*init_struct(int argc, char *argv[])
 		philo->num2eat = ph_atoi(argv[5]);
 	else
 		philo->num2eat = -1;
+	philo->spawning_done = 0;
+	philo->spawn_count = 0;
+	philo->spawn_count_copy = 0;
 	philo->mutexes = malloc(sizeof(pthread_mutex_t) * philo->phil_num);
 	if (!philo->mutexes)
 	{

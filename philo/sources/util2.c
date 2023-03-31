@@ -70,7 +70,7 @@ void	*ph_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-long long	timenow()
+long long	timenow(t_philo *philo)
 {
 	struct timeval	current_time;
 	long long		res;
@@ -78,5 +78,8 @@ long long	timenow()
 	if (gettimeofday(&current_time, NULL) == -1)
 		return (-1);
 	res = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
-	return (res);
+	if (philo == NULL)
+		return (res);
+	else
+		return (res - philo->t0);
 }

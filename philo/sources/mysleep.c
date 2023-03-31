@@ -16,7 +16,7 @@ void	mysleep(long long amount)
 {
 	long long	wake_time;
 
-	wake_time = timenow() + amount;
-	while (timenow() < wake_time)
+	wake_time = timenow(NULL) + amount;
+	while (timenow(NULL) < wake_time)
 		usleep(5);
 }

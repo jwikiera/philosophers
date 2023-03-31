@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   mysleep.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,8 +12,6 @@
 
 #include "philo.h"
 
-/* number_of_philosophers time_to_die time_to_eat
- * time_to_sleep [number_of_times_each_philosopher_must_eat] */
 
 void	*routine(void *arg_)
 {
@@ -23,98 +21,84 @@ void	*routine(void *arg_)
 	arg = arg_;
 	philo = arg->philo;
 
-	//printf("lol from philo %d\n", arg->id + 1);
+	printf("philo %d spawned\n", arg->id + 1);
+	pthread_mutex_lock(&philo->sophers_mutex);
+	philo->spawn_count++;
+	pthread_mutex_unlock(&philo->sophers_mutex);
 
-	while (!get_someone_died(philo))// && (!(philo->num2eat > -1) || (philo->num2eat > -1 && philo->sophers[arg->id]->eat_count < philo->num2eat)))// && philo->sophers[arg->id]->eat_count < philo->num2eat)
+	//philo->sophers[arg->id]->time_last_eaten = -1;
+
+	while (!philo->sophers[arg->id]->self_launched)
 	{
-		if (!philo->sophers[arg->id]->is_eating && !philo->sophers[arg->id]->is_sleeping)
+		pthread_mutex_lock(&philo->death_mutex);
+		philo->sophers[arg->id]->self_launched = philo->spawning_done;
+		pthread_mutex_unlock(&philo->death_mutex);
+		mysleep(10);
+	}
+
+	philo->sophers[arg->id]->time_last_eaten = timenow(NULL);
+	if (arg->id % 2 != 0 &&!philo->sophers[arg->id]->fuse)
+	{
+		philo->sophers[arg->id]->fuse = 1;
+		mysleep(200);
+	}
+
+	while (!get_someone_died(philo))
+	{
+		if (arg->id % 2 != 0)
 		{
-			if (arg->id % 2 != 0)
-			{
-				//taking left fork, happens second
-				pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 0)]);
-				log_fork(philo, arg->id);
+			//taking left fork
+			pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 0)]);
+			log_fork(philo, arg->id);
 
-				//taking right fork
-				pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 1)]);
-				log_fork(philo, arg->id);
-
-				log_eating(philo, arg->id);
-
-				philo->sophers[arg->id]->is_eating = 1;
-				philo->sophers[arg->id]->time_when_started_eating = timenow();
-
-				pthread_mutex_lock(&philo->sophers_mutex);
-				philo->sophers[arg->id]->time_last_eaten = timenow();// + philo->time2eat;
-				pthread_mutex_unlock(&philo->sophers_mutex);
-
-				mysleep(philo->time2eat);
-				philo->sophers[arg->id]->eat_count++;
-				pthread_mutex_lock(&philo->done_eating_mutex);
-				if (philo->sophers[arg->id]->eat_count == philo->num2eat)
-					philo->philos_done_eating++;
-				pthread_mutex_unlock(&philo->done_eating_mutex);
-				//fprintf(stderr, "philo %d has eaten %d times now (max is %d)\n", arg->id + 1, philo->sophers[arg->id]->eat_count, philo->num2eat);
-
-				pthread_mutex_lock(&philo->sophers_mutex);
-				philo->sophers[arg->id]->time_last_eaten = timenow();
-				pthread_mutex_unlock(&philo->sophers_mutex);
-
-				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 1)]);
-				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 0)]);
-
-			}
-			else
-			{
-				//taking right fork, happens first
-				pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 1)]);
-				log_fork(philo, arg->id);
-
-				//taking left fork
-				pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 0)]);
-				log_fork(philo, arg->id);
-
-				log_eating(philo, arg->id);
-
-				philo->sophers[arg->id]->is_eating = 1;
-				philo->sophers[arg->id]->time_when_started_eating = timenow();
-
-				pthread_mutex_lock(&philo->sophers_mutex);
-				philo->sophers[arg->id]->time_last_eaten = timenow();// + philo->time2eat;
-				pthread_mutex_unlock(&philo->sophers_mutex);
-
-				mysleep(philo->time2eat);
-				philo->sophers[arg->id]->eat_count++;
-				pthread_mutex_lock(&philo->done_eating_mutex);
-				if (philo->sophers[arg->id]->eat_count == philo->num2eat)
-					philo->philos_done_eating++;
-				pthread_mutex_unlock(&philo->done_eating_mutex);
-				//fprintf(stderr, "philo %d has eaten %d times now (max is %d)\n", arg->id + 1, philo->sophers[arg->id]->eat_count, philo->num2eat);
-
-				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 0)]);
-				pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 1)]);
-
-
-			}
+			//taking right fork
+			pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 1)]);
+			log_fork(philo, arg->id);
 		}
-		if (philo->sophers[arg->id]->is_eating && (timenow() - philo->sophers[arg->id]->time_when_started_eating)
-		>= philo->time2eat)
+		else
 		{
-			log_sleeping(philo, arg->id);
-			philo->sophers[arg->id]->is_eating = 0;
-			philo->sophers[arg->id]->is_sleeping = 1;
-			philo->sophers[arg->id]->time_when_started_sleeping = timenow();
-			mysleep(philo->time2sleep);
+			//taking right fork
+			pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 1)]);
+			log_fork(philo, arg->id);
+
+			//taking left fork
+			pthread_mutex_lock(&philo->mutexes[get_index(philo, arg->id, 0)]);
+			log_fork(philo, arg->id);
 		}
-		if (philo->sophers[arg->id]->is_sleeping && (timenow() - philo->sophers[arg->id]->time_when_started_sleeping)
-		>= philo->time2sleep)
-		{
-			philo->sophers[arg->id]->is_sleeping = 0;
-			log_thinking(philo, arg->id);
-		}
+
+		//eat log
+		log_eating(philo, arg->id);
+
+		philo->sophers[arg->id]->time_when_started_eating = timenow(NULL);
+
+		pthread_mutex_lock(&philo->sophers_mutex);
+		philo->sophers[arg->id]->time_last_eaten = timenow(NULL);// + philo->time2eat;
+		pthread_mutex_unlock(&philo->sophers_mutex);
+
+		mysleep(philo->time2eat);
+
+		//philo->sophers[arg->id]->eat_count++;
+		//pthread_mutex_lock(&philo->done_eating_mutex);
+		//if (philo->sophers[arg->id]->eat_count == philo->num2eat)
+		//	philo->philos_done_eating++;
+		//pthread_mutex_unlock(&philo->done_eating_mutex);
+
+		//fprintf(stderr, "philo %d has eaten %d times now (max is %d)\n", arg->id + 1, philo->sophers[arg->id]->eat_count, philo->num2eat);
+
+		pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 1)]);
+		pthread_mutex_unlock(&philo->mutexes[get_index(philo, arg->id, 0)]);
+
+		pthread_mutex_lock(&philo->sophers_mutex);
+		philo->sophers[arg->id]->time_last_eaten = timenow(NULL);
+		pthread_mutex_unlock(&philo->sophers_mutex);
+
+		log_sleeping(philo, arg->id);
+		mysleep(philo->time2sleep);
+		log_thinking(philo, arg->id);
 	}
 	return (NULL);
 }
+
 
 int	main(int argc, char **argv)
 {
@@ -145,13 +129,29 @@ int	main(int argc, char **argv)
 		free(philo);
 		return (2);
 	}
+
+	pthread_mutex_lock(&philo->death_mutex);
+
 	for (int i = 0; i < philo->phil_num; ++i) {
 		arg[i].id = i;
 		arg[i].philo = philo;
 		pthread_create(&(philo->ts[i]), NULL, &routine, &arg[i]);
 	}
 
-	while (!get_someone_died(philo) /*&& (!(philo->num2eat > -1) || (philo->num2eat > -1 && get_done_eating(philo) < philo->phil_num))*/)
+	while (philo->spawn_count_copy < philo->phil_num)
+	{
+		pthread_mutex_lock(&philo->sophers_mutex);
+		philo->spawn_count_copy = philo->spawn_count;
+		pthread_mutex_unlock(&philo->sophers_mutex);
+		mysleep(10);
+	}
+
+	philo->spawning_done = 1;
+	philo->t0 = timenow(NULL);
+	pthread_mutex_unlock(&philo->death_mutex);
+	fprintf(stderr, "spawning done...\n");
+
+	while (!get_someone_died(philo))
 	{
 		if (philo->num2eat > -1 && get_done_eating(philo) == philo->phil_num)
 		{
@@ -162,7 +162,7 @@ int	main(int argc, char **argv)
 		else
 		{
 			for (int i = 0; i < philo->phil_num; ++i) {
-				if (!get_someone_died(philo) && (timenow() - get_time_last_eaten(philo, i)) > philo->time2die)
+				if (!get_someone_died(philo) && (timenow(NULL) - get_time_last_eaten(philo, i)) > philo->time2die)
 				{
 					log_ded(philo, i);
 					pthread_mutex_lock(&philo->death_mutex);
