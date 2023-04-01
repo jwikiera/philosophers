@@ -12,11 +12,26 @@
 
 #include "philo.h"
 
-void	mysleep(long long amount)
+/* sleep in microseconds */
+void	mysleepmicro(long long amount)
 {
 	long long	wake_time;
 
 	wake_time = timenow(NULL) + amount;
 	while (timenow(NULL) < wake_time)
-		usleep(5);
+		usleep(100);
+}
+
+/* sleep in milliseconds, interrupt if someone dies */
+void	mysleep(long long amount, t_philo *philo)
+{
+	long long	wake_time;
+
+	wake_time = timenow(NULL) + amount;
+	while (timenow(NULL) < wake_time)
+	{
+		if (get_someone_died(philo))
+			break ;
+		usleep(100);
+	}
 }

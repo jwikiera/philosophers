@@ -98,6 +98,7 @@ size_t		ph_strlcat(char *dst, const char *src, size_t dstsize);
 int			ph_str_is_int(const char *str);
 int			ph_atoi(const char *nptr);
 long long	timenow(t_philo *philo);
-void		mysleep(long long amount);
+void		mysleep(long long amount, t_philo *philo);
+void		mysleepmicro(long long amount);
 
 #endif

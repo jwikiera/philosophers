@@ -33,14 +33,14 @@ void	*routine(void *arg_)
 		pthread_mutex_lock(&philo->death_mutex);
 		philo->sophers[arg->id]->self_launched = philo->spawning_done;
 		pthread_mutex_unlock(&philo->death_mutex);
-		mysleep(10);
+		usleep(100);
 	}
 
 	philo->sophers[arg->id]->time_last_eaten = timenow(NULL);
 	if (arg->id % 2 != 0 &&!philo->sophers[arg->id]->fuse)
 	{
 		philo->sophers[arg->id]->fuse = 1;
-		mysleep(200);
+		usleep(200);
 	}
 
 	while (!get_someone_died(philo))
@@ -75,7 +75,7 @@ void	*routine(void *arg_)
 		philo->sophers[arg->id]->time_last_eaten = timenow(NULL);// + philo->time2eat;
 		pthread_mutex_unlock(&philo->sophers_mutex);
 
-		mysleep(philo->time2eat);
+		mysleep(philo->time2eat, philo);
 
 		//philo->sophers[arg->id]->eat_count++;
 		//pthread_mutex_lock(&philo->done_eating_mutex);
@@ -93,7 +93,7 @@ void	*routine(void *arg_)
 		pthread_mutex_unlock(&philo->sophers_mutex);
 
 		log_sleeping(philo, arg->id);
-		mysleep(philo->time2sleep);
+		mysleep(philo->time2sleep, philo);
 		log_thinking(philo, arg->id);
 	}
 	return (NULL);
@@ -118,7 +118,9 @@ int	main(int argc, char **argv)
 	if (philo->phil_num == 1)
 	{
 		log_fork(philo, 0);
-		mysleep(philo->time2die);
+		fprintf(stderr, "test1, will sleep %d ms\n", philo->time2die);
+		mysleep(philo->time2die, philo);
+		fprintf(stderr, "test1\n");
 		log_ded(philo, 0);
 		free_struct(philo);
 		return (0);
@@ -143,7 +145,7 @@ int	main(int argc, char **argv)
 		pthread_mutex_lock(&philo->sophers_mutex);
 		philo->spawn_count_copy = philo->spawn_count;
 		pthread_mutex_unlock(&philo->sophers_mutex);
-		mysleep(10);
+		usleep(10);
 	}
 
 	philo->spawning_done = 1;
