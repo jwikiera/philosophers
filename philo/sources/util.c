@@ -33,7 +33,7 @@ int	ph_isdigit(int c)
 int	ph_isspace(char c)
 {
 	return (c == ' ' || c == '\n' || c == '\t'
-			|| c == '\r' || c == '\v' || c == '\f');
+		|| c == '\r' || c == '\v' || c == '\f');
 }
 
 size_t	ph_strlcpy(char *dst, const char *src, size_t dstsize)

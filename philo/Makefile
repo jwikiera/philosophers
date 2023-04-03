@@ -3,13 +3,11 @@ NAME					:= philosophers
 UNAME_S					:= $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
-  FSANITIZELEAK			:= -fsanitize=leak
   FRAMEWORK				:=
   LINUX_LIBS			:=
   LINUX_INCLUDES		:= -I/usr/include
   OS_FLAG				:= -D LINUX
 else
-  FSANITIZELEAK			:=
   FRAMEWORK				:=
   LINUX_LIBS			:=
   LINUX_INCLUDES		:=
@@ -22,6 +20,12 @@ else
 	FSANADDRESS			:=
 endif
 
+ifndef leakoff
+	FSANLEAK			:= -fsanitize=leak
+else
+	FSANLEAK			:=
+endif
+
 ifdef santhread
 	FSANTHREAD			:= -fsanitize=thread
 else
@@ -29,7 +33,7 @@ else
 endif
 
 ifndef fsanitizeoff
-	FSANITIZE			:= -fno-omit-frame-pointer -fstack-protector-all $(FSANADDRESS) $(FSANITIZELEAK) $(FSANTHREAD)
+	FSANITIZE			:= -fno-omit-frame-pointer -fstack-protector-all $(FSANADDRESS) $(FSANLEAK) $(FSANTHREAD)
 else
 	FSANITIZE			:=
 endif
@@ -69,7 +73,13 @@ SOURCES_LIST			:= main.c\
 							log.c\
 							get_fork_status.c\
 							mysleep.c\
-							mutex_getters.c
+							mutex_getters.c\
+							philo_funcs.c\
+							philo_funcs2.c\
+							philo_routine.c\
+							main_funcs.c\
+							free_everything.c\
+							init_struct2.c
 HEADER_LIST				:= philo.h
 HEADER_FILES			:= $(addprefix $(INCLUDE_DIR), $(HEADER_LIST))
 

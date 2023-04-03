@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_sophers.c                                     :+:      :+:    :+:   */
+/*   init_struct2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,53 +12,50 @@
 
 #include "philo.h"
 
-void	free_sophers(t_sopher **sophers, int amount)
+/* mallocs threads */
+pthread_t	*alloc_ts(int num)
 {
-	int	i;
+	pthread_t	*res;
 
-	i = 0;
-	while (i < amount)
-	{
-		free(sophers[i]);
-		i ++;
-	}
-	free(sophers);
-}
-
-void	init_2(t_sopher	***res_, int i)
-{
-	t_sopher	**res;
-
-	res = *res_;
-	res[i]->time_last_eaten = timenow(NULL) + 100000;
-	res[i]->time_when_started_eating = 0;
-	res[i]->time_when_started_sleeping = 0;
-	res[i]->is_eating = 0;
-	res[i]->is_sleeping = 0;
-	res[i]->eat_count = 0;
-	res[i]->fuse = 0;
-	res[i]->self_launched = 0;
-}
-
-t_sopher	**init_sophers(int amount)
-{
-	t_sopher	**res;
-	int			i;
-
-	res = malloc(sizeof(*res) * amount);
+	res = malloc(sizeof(pthread_t) * num);
 	if (!res)
 		return (NULL);
+	return (res);
+}
+
+int	create_forks(t_philo *philo)
+{
+	int	i;
+	int	j;
+
 	i = 0;
-	while (i < amount)
+	while (i < philo->phil_num)
 	{
-		res[i] = malloc(sizeof(**res));
-		if (!res[i])
+		if (pthread_mutex_init(&(philo->mutexes[i]), NULL) != 0)
 		{
-			free_sophers(res, i);
-			return (NULL);
+			j = 0;
+			while (j < i - 1)
+			{
+				pthread_mutex_destroy(&(philo->mutexes[j]));
+				j ++;
+			}
+			free(philo->mutexes);
+			free(philo);
+			return (0);
 		}
-		init_2(&res, i);
 		i ++;
 	}
-	return (res);
+	return (1);
+}
+
+t_philo	*return_free(t_philo *philo)
+{
+	free(philo);
+	return (NULL);
+}
+
+int	return_free_int(t_philo *philo)
+{
+	free_struct(philo);
+	return (0);
 }

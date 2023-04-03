@@ -14,7 +14,7 @@
 
 int	get_done_eating(t_philo *philo)
 {
-	int philos_done_eating_copy;
+	int	philos_done_eating_copy;
 
 	pthread_mutex_lock(&philo->done_eating_mutex);
 	philos_done_eating_copy = philo->philos_done_eating;
@@ -24,7 +24,7 @@ int	get_done_eating(t_philo *philo)
 
 int	get_someone_died(t_philo *philo)
 {
-	int someone_died_copy;
+	int	someone_died_copy;
 
 	pthread_mutex_lock(&philo->death_mutex);
 	someone_died_copy = philo->someone_died;
@@ -34,7 +34,7 @@ int	get_someone_died(t_philo *philo)
 
 long	get_time_last_eaten(t_philo *philo, int id)
 {
-	long time_last_eaten_copy;
+	long	time_last_eaten_copy;
 
 	pthread_mutex_lock(&philo->sophers_mutex);
 	time_last_eaten_copy = philo->sophers[id]->time_last_eaten;

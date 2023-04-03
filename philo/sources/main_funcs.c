@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_sophers.c                                     :+:      :+:    :+:   */
+/*   main_funcs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,53 +12,27 @@
 
 #include "philo.h"
 
-void	free_sophers(t_sopher **sophers, int amount)
+void	set_dead(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->death_mutex);
+	philo->someone_died = 1;
+	pthread_mutex_unlock(&philo->death_mutex);
+}
+
+void	join_threads(t_philo *philo)
 {
 	int	i;
 
 	i = 0;
-	while (i < amount)
+	while (i < philo->phil_num)
 	{
-		free(sophers[i]);
+		pthread_join((philo->ts[i]), NULL);
 		i ++;
 	}
-	free(sophers);
 }
 
-void	init_2(t_sopher	***res_, int i)
+int	print_invalid_args(void)
 {
-	t_sopher	**res;
-
-	res = *res_;
-	res[i]->time_last_eaten = timenow(NULL) + 100000;
-	res[i]->time_when_started_eating = 0;
-	res[i]->time_when_started_sleeping = 0;
-	res[i]->is_eating = 0;
-	res[i]->is_sleeping = 0;
-	res[i]->eat_count = 0;
-	res[i]->fuse = 0;
-	res[i]->self_launched = 0;
-}
-
-t_sopher	**init_sophers(int amount)
-{
-	t_sopher	**res;
-	int			i;
-
-	res = malloc(sizeof(*res) * amount);
-	if (!res)
-		return (NULL);
-	i = 0;
-	while (i < amount)
-	{
-		res[i] = malloc(sizeof(**res));
-		if (!res[i])
-		{
-			free_sophers(res, i);
-			return (NULL);
-		}
-		init_2(&res, i);
-		i ++;
-	}
-	return (res);
+	printf("Invalid arguments\n");
+	return (0);
 }
