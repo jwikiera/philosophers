@@ -47,7 +47,7 @@ else
 endif
 
 CC						:= cc
-CFLAGS					:= -Wall -Wextra -Werror -pedantic $(OPTFLAG) $(DEVFLAGS) $(OS_FLAG)
+CFLAGS					:= -Wall -Wextra -Werror -pedantic -pthread $(OPTFLAG) $(DEVFLAGS) $(OS_FLAG)
 RM						:= rm -f
 
 LIB_DIRECTORY			:= ./libs/
@@ -73,7 +73,6 @@ SOURCES_LIST			:= main.c\
 							log.c\
 							get_fork_status.c\
 							mysleep.c\
-							mutex_getters.c\
 							philo_funcs.c\
 							philo_funcs2.c\
 							philo_routine.c\

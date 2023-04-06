@@ -19,6 +19,8 @@
 # include "pthread.h"
 # include "unistd.h"
 # include "sys/time.h"
+# include "sys/semaphore.h"
+# include "fcntl.h"
 
 int			args_valid(int argc, char **argv);
 
@@ -43,7 +45,8 @@ typedef struct s_philo
 	int				spawning_done;
 	long long		t0;
 	int				spawn_count;
-	int				spawn_count_copy;
+	sem_t			*fork_sem;
+	sem_t			*count_sem;
 }	t_philo;
 
 typedef struct s_arg

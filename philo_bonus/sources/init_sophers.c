@@ -31,10 +31,6 @@ void	init_2(t_sopher	***res_, int i)
 
 	res = *res_;
 	res[i]->time_last_eaten = timenow(NULL) + 100000;
-	res[i]->time_when_started_eating = 0;
-	res[i]->time_when_started_sleeping = 0;
-	res[i]->is_eating = 0;
-	res[i]->is_sleeping = 0;
 	res[i]->eat_count = 0;
 	res[i]->fuse = 0;
 	res[i]->self_launched = 0;

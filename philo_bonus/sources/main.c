@@ -21,34 +21,36 @@ int	solo_routine(t_philo *philo)
 	return (0);
 }
 
-void	create_and_wait_for_threads(t_philo *philo, t_arg *arg)
+int	create_and_wait_for_children(t_philo *philo, t_arg *arg)
 {
 	int	i;
+	int	id;
 
-	pthread_mutex_lock(&philo->death_mutex);
+	(void) arg;
 	i = 0;
 	while (i < philo->phil_num)
 	{
-		arg[i].id = i;
-		arg[i].philo = philo;
-		pthread_create(&(philo->ts[i]), NULL, &routine, &arg[i]);
+		id = fork();
+		if (id < 0)
+			return (0);
+		if (id != 0)
+		{
+			fprintf(stderr, "hello from parent");
+		}
+		else
+		{
+			fprintf(stderr, "hello from child");
+			break ;
+		}
 		i ++;
 	}
-	while (philo->spawn_count_copy < philo->phil_num)
-	{
-		pthread_mutex_lock(&philo->sophers_mutex);
-		philo->spawn_count_copy = philo->spawn_count;
-		pthread_mutex_unlock(&philo->sophers_mutex);
-		usleep(10);
-	}
-	philo->spawning_done = 1;
-	philo->t0 = timenow(NULL);
-	pthread_mutex_unlock(&philo->death_mutex);
+	return (1);
 }
 
 void	main_loop(t_philo *philo)
 {
-	int	i;
+	(void) philo;
+	/*int	i;
 
 	while (!get_someone_died(philo))
 	{
@@ -68,7 +70,7 @@ void	main_loop(t_philo *philo)
 				i ++;
 			}
 		}
-	}
+	}*/
 }
 
 int	main(int argc, char **argv)
@@ -91,7 +93,7 @@ int	main(int argc, char **argv)
 		free(philo);
 		return (2);
 	}
-	create_and_wait_for_threads(philo, arg);
+	create_and_wait_for_children(philo, arg);
 	main_loop(philo);
 	join_threads(philo);
 	return (free_everything(philo, arg));

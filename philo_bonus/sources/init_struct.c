@@ -29,8 +29,14 @@ t_philo	*init_struct(int argc, char *argv[])
 		philo->num2eat = -1;
 	philo->spawning_done = 0;
 	philo->spawn_count = 0;
-	philo->spawn_count_copy = 0;
 	philo->someone_died = 0;
+	philo->fork_sem = sem_open("/forks", O_CREAT, 0666, 1);
+	philo->count_sem = sem_open("/count", O_CREAT, 0666, 1);
+	if (philo->fork_sem == SEM_FAILED || philo->count_sem == SEM_FAILED)
+	{
+		free(philo);
+		return (NULL);
+	}
 	return (philo);
 }
 
