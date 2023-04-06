@@ -1,4 +1,4 @@
-NAME					:= philosophers
+NAME					:= philo_bonus
 
 UNAME_S					:= $(shell uname -s)
 
@@ -47,7 +47,7 @@ else
 endif
 
 CC						:= cc
-CFLAGS					:= -Wall -Wextra -Werror -pedantic $(OPTFLAG) $(DEVFLAGS) $(OS_FLAG) -pthread
+CFLAGS					:= -Wall -Wextra -Werror -pedantic $(OPTFLAG) $(DEVFLAGS) $(OS_FLAG)
 RM						:= rm -f
 
 LIB_DIRECTORY			:= ./libs/

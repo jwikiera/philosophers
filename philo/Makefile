@@ -1,4 +1,4 @@
-NAME					:= philosophers
+NAME					:= philo
 
 UNAME_S					:= $(shell uname -s)
 
