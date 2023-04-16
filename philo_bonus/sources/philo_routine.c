@@ -12,30 +12,22 @@
 
 #include "philo.h"
 
-void	*routine(void *arg_)
+void	routine(t_philo *philo)
 {
-	t_arg	*arg;
-	t_philo	*philo;
-
-	arg = arg_;
-	philo = arg->philo;
-	increase_spawn_count(philo);
-	wait_for_spawns(arg->id, philo);
-	pthread_mutex_lock(&philo->sophers_mutex);
-	philo->sophers[arg->id]->time_last_eaten = timenow(NULL);
-	pthread_mutex_unlock(&philo->sophers_mutex);
-	if_odd_wait(arg->id, philo);
-	while (!get_someone_died(philo))
+	pthread_create(philo->death_checker, NULL, &death_checker_routine, philo);
+	philo->time_last_eaten = timenow(NULL);
+	while (!get_philo_died(philo))
 	{
-		grab_forks(arg->id, philo);
-		set_lat_eaten(arg->id, philo);
-		log_eating(philo, arg->id);
+		grab_forks(philo);
+		set_lat_eaten(philo);
+		log_eating(philo);
 		mysleep(philo->time2eat, philo);
-		increase_eat_counter(arg->id, philo);
-		ungrab_forks(arg->id, philo);
-		log_sleeping(philo, arg->id);
+		philo->eat_count++;
+		if (philo->eat_count == philo->num2eat)
+			panic_exit(philo, FINISHEDEATING);
+		ungrab_forks(philo);
+		log_sleeping(philo);
 		mysleep(philo->time2sleep, philo);
-		log_thinking(philo, arg->id);
+		log_thinking(philo);
 	}
-	return (NULL);
 }

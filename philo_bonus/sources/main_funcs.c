@@ -12,27 +12,18 @@
 
 #include "philo.h"
 
-void	set_dead(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->death_mutex);
-	philo->someone_died = 1;
-	pthread_mutex_unlock(&philo->death_mutex);
-}
-
-void	join_threads(t_philo *philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < philo->phil_num)
-	{
-		pthread_join((philo->ts[i]), NULL);
-		i ++;
-	}
-}
-
 int	print_invalid_args(void)
 {
 	printf("Invalid arguments\n");
 	return (0);
+}
+
+int	get_philo_died(t_philo *philo)
+{
+	int	ret;
+
+	pthread_mutex_lock(&philo->mutex);
+	ret = timenow(NULL) - philo->time_last_eaten > philo->time2die;
+	pthread_mutex_unlock(&philo->mutex);
+	return (ret);
 }

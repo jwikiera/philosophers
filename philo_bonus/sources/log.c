@@ -12,42 +12,43 @@
 
 #include "philo.h"
 
-int	log_fork(t_philo *philo, int id)
+//todo semaphore for prints
+int	log_fork(t_philo *philo)
 {
 
-	printf("%lld %d has taken a fork\n", timenow(philo), id + 1);
+	printf("%lld %d has taken a fork\n", timenow(philo), philo->id);
 
 	return (1);
 }
 
-int	log_eating(t_philo *philo, int id)
+int	log_eating(t_philo *philo)
 {
 
-		printf("%lld %d is eating\n", timenow(philo), id + 1);
+		printf("%lld %d is eating\n", timenow(philo), philo->id);
 
 	return (1);
 }
 
-int	log_sleeping(t_philo *philo, int id)
+int	log_sleeping(t_philo *philo)
 {
 
-		printf("%lld %d is sleeping\n", timenow(philo), id + 1);
+		printf("%lld %d is sleeping\n", timenow(philo), philo->id);
 
 	return (1);
 }
 
-int	log_thinking(t_philo *philo, int id)
+int	log_thinking(t_philo *philo)
 {
 
-		printf("%lld %d is thinking\n", timenow(philo), id + 1);
+		printf("%lld %d is thinking\n", timenow(philo), philo->id);
 
 	return (1);
 }
 
-int	log_ded(t_philo *philo, int id)
+int	log_ded(t_philo *philo)
 {
 
-		printf("%lld %d died\n", timenow(philo), id + 1);
+		printf("%lld %d died\n", timenow(philo), philo->id);
 
 	return (1);
 }

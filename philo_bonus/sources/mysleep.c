@@ -30,7 +30,7 @@ void	mysleep(long long amount, t_philo *philo)
 	wake_time = timenow(NULL) + amount;
 	while (timenow(NULL) < wake_time)
 	{
-		if (get_someone_died(philo))
+		if (get_philo_died(philo))
 			break ;
 		usleep(100);
 	}

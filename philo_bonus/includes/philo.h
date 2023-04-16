@@ -21,77 +21,60 @@
 # include "sys/time.h"
 # include "sys/semaphore.h"
 # include "fcntl.h"
+# include "signal.h"
+# include "string.h"
+# include "errno.h"
+
+# define FORKSEM "/forks"
+# define RIGHTSEM "/righttotake"
+# define FINISHEDEATING 1
+# define DIED 2
+# define ERROR 3
 
 int			args_valid(int argc, char **argv);
 
-typedef struct s_sopher
-{
-	long	time_last_eaten;
-	int		eat_count;
-	int		fuse;
-	int		self_launched;
-}	t_sopher;
-
 typedef struct s_philo
 {
+	int				id;
 	int				phil_num;
 	int				time2die;
 	int				time2eat;
 	int				time2sleep;
 	int				num2eat;
-	int				someone_died;
-	t_sopher		**sophers;
-	int				philos_done_eating;
-	int				spawning_done;
 	long long		t0;
-	int				spawn_count;
 	sem_t			*fork_sem;
-	sem_t			*count_sem;
+	sem_t			*right_to_take_sem;
+	sem_t			*death_sem;
+	long			time_last_eaten;
+	int				eat_count;
+	pthread_t		*death_checker;
+	pthread_mutex_t	mutex;
+	pid_t			*pids;
 }	t_philo;
-
-typedef struct s_arg
-{
-	int		id;
-	t_philo	*philo;
-}	t_arg;
 
 t_philo		*init_struct(int argc, char *argv[]);
 void		free_struct(t_philo *philo);
-t_sopher	**init_sophers(int amount);
-void		free_sophers(t_sopher **sophers, int amount);
-int			get_index(t_philo *philo, int id, int direction);
-void		*routine(void *arg_);
+void		routine(t_philo *philo);
+void		panic_exit(t_philo *philo, int code);
+void		*death_checker_routine(void *arg_);
 
 /* logs */
-int			log_fork(t_philo *philo, int id);
-int			log_eating(t_philo *philo, int id);
-int			log_sleeping(t_philo *philo, int id);
-int			log_thinking(t_philo *philo, int id);
-int			log_ded(t_philo *philo, int id);
-
-/* mutex getters */
-int			get_done_eating(t_philo *philo);
-int			get_someone_died(t_philo *philo);
-long		get_time_last_eaten(t_philo *philo, int id);
+int			log_fork(t_philo *philo);
+int			log_eating(t_philo *philo);
+int			log_sleeping(t_philo *philo);
+int			log_thinking(t_philo *philo);
+int			log_ded(t_philo *philo);
 
 /* philo funcs */
-void		increase_spawn_count(t_philo *philo);
-void		wait_for_spawns(int id, t_philo *philo);
-void		if_odd_wait(int id, t_philo *philo);
-void		grab_forks(int id, t_philo *philo);
-void		ungrab_forks(int id, t_philo *philo);
-void		set_lat_eaten(int id, t_philo *philo);
-void		increase_eat_counter(int id, t_philo *philo);
+void		grab_forks(t_philo *philo);
+void		ungrab_forks(t_philo *philo);
+void		set_lat_eaten(t_philo *philo);
 
 /* main funcs */
-void		set_dead(t_philo *philo);
-void		join_threads(t_philo *philo);
-int			free_everything(t_philo *philo, t_arg *arg);
 int			print_invalid_args(void);
+int			get_philo_died(t_philo *philo);
 
 /* init */
-pthread_t	*alloc_ts(int num);
-int			create_forks(t_philo *philo);
 t_philo		*return_free(t_philo *philo);
 int			return_free_int(t_philo *philo);
 

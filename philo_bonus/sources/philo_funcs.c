@@ -12,54 +12,43 @@
 
 #include "philo.h"
 
-void	increase_spawn_count(t_philo *philo)
+void	grab_forks(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->sophers_mutex);
-	philo->spawn_count++;
-	pthread_mutex_unlock(&philo->sophers_mutex);
+	if (sem_wait(philo->right_to_take_sem) != 0)
+	{
+		panic_exit(philo, ERROR);
+	}
+	if (sem_wait(philo->fork_sem) != 0)
+	{
+		panic_exit(philo, ERROR);
+	}
+	log_fork(philo);
+	if (sem_wait(philo->fork_sem) != 0)
+	{
+		panic_exit(philo, ERROR);
+	}
+	if (sem_post(philo->right_to_take_sem) != 0)
+	{
+		panic_exit(philo, ERROR);
+	}
+	log_fork(philo);
 }
 
-void	wait_for_spawns(int id, t_philo *philo)
+void	ungrab_forks(t_philo *philo)
 {
-	while (!philo->sophers[id]->self_launched)
+	if (sem_post(philo->fork_sem) != 0)
 	{
-		pthread_mutex_lock(&philo->death_mutex);
-		philo->sophers[id]->self_launched = philo->spawning_done;
-		pthread_mutex_unlock(&philo->death_mutex);
-		usleep(100);
+		panic_exit(philo, ERROR);
+	}
+	if (sem_post(philo->fork_sem) != 0)
+	{
+		panic_exit(philo, ERROR);
 	}
 }
 
-void	if_odd_wait(int id, t_philo *philo)
+void	set_lat_eaten(t_philo *philo)
 {
-	if (id % 2 != 0 &&!philo->sophers[id]->fuse)
-	{
-		philo->sophers[id]->fuse = 1;
-		usleep(10);
-	}
-}
-
-void	grab_forks(int id, t_philo *philo)
-{
-	if (id % 2 != 0)
-	{
-		pthread_mutex_lock(&philo->mutexes[get_index(philo, id, 0)]);
-		log_fork(philo, id);
-		pthread_mutex_lock(&philo->mutexes[get_index(philo, id, 1)]);
-		log_fork(philo, id);
-	}
-	else
-	{
-		pthread_mutex_lock(&philo->mutexes[get_index(philo, id, 1)]);
-		log_fork(philo, id);
-		pthread_mutex_lock(&philo->mutexes[get_index(philo, id, 0)]);
-		log_fork(philo, id);
-	}
-}
-
-void	set_lat_eaten(int id, t_philo *philo)
-{
-	pthread_mutex_lock(&philo->sophers_mutex);
-	philo->sophers[id]->time_last_eaten = timenow(NULL);
-	pthread_mutex_unlock(&philo->sophers_mutex);
+	pthread_mutex_lock(&philo->mutex);
+	philo->time_last_eaten = timenow(NULL);
+	pthread_mutex_unlock(&philo->mutex);
 }
