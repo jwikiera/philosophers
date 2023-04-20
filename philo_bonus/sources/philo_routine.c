@@ -14,17 +14,25 @@
 
 void	routine(t_philo *philo)
 {
+	//fprintf(stderr, "hello from routine of philo %d!\n", philo->id);
 	pthread_create(philo->death_checker, NULL, &death_checker_routine, philo);
-	philo->time_last_eaten = timenow(NULL);
+	//fprintf(stderr, "philo %d, created thread\n", philo->id);
+	set_last_eaten(philo);
 	while (!get_philo_died(philo))
 	{
+		//fprintf(stderr, "philo %d, dupa 1\n", philo->id);
 		grab_forks(philo);
-		set_lat_eaten(philo);
+		//fprintf(stderr, "philo %d, dupa 2\n", philo->id);
+		set_last_eaten(philo);
 		log_eating(philo);
 		mysleep(philo->time2eat, philo);
-		philo->eat_count++;
-		if (philo->eat_count == philo->num2eat)
-			panic_exit(philo, FINISHEDEATING);
+		if (philo->eat_count < philo->num2eat)
+		{
+			philo->eat_count++;
+			sem_post(philo->eat_count_sem);
+		}
+			//panic_exit(philo, FINISHEDEATING);
+
 		ungrab_forks(philo);
 		log_sleeping(philo);
 		mysleep(philo->time2sleep, philo);

@@ -20,10 +20,12 @@ int	print_invalid_args(void)
 
 int	get_philo_died(t_philo *philo)
 {
+	//fprintf(stderr, "using get_philo_died\n");
+	//fprintf(stderr, "get_philo_died: %p\n", (void*)&philo->mutex);
 	int	ret;
 
-	pthread_mutex_lock(&philo->mutex);
+	sem_wait(philo->mainsem);
 	ret = timenow(NULL) - philo->time_last_eaten > philo->time2die;
-	pthread_mutex_unlock(&philo->mutex);
+	sem_post(philo->mainsem);
 	return (ret);
 }

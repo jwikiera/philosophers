@@ -30,14 +30,27 @@ t_philo	*init_struct(int argc, char *argv[])
 		philo->num2eat = ph_atoi(argv[5]);
 	else
 		philo->num2eat = -1;
+	philo->can_write = 1;
 	sem_unlink(FORKSEM);
 	sem_unlink(RIGHTSEM);
+	sem_unlink(DEATHSEM);
+	sem_unlink(EATCOUNTSEM);
+	sem_unlink(WRITESEM);
+	sem_unlink(WRITEACCESSSEM);
+	sem_unlink(MAINSEM);
 	philo->fork_sem = sem_open(FORKSEM, O_CREAT, 0666, philo->phil_num);
-	philo->fork_sem = sem_open(RIGHTSEM, O_CREAT, 0666, 1);
-	if (philo->fork_sem == SEM_FAILED || philo->right_to_take_sem == SEM_FAILED)
+	philo->right_to_take_sem = sem_open(RIGHTSEM, O_CREAT, 0666, 1);
+	philo->death_sem = sem_open(DEATHSEM, O_CREAT, 0666, 0);
+	philo->eat_count_sem = sem_open(EATCOUNTSEM, O_CREAT, 0666, 0);
+	philo->write_sem = sem_open(WRITESEM, O_CREAT, 0666, 1);
+	philo->write_access_sem = sem_open(WRITEACCESSSEM, O_CREAT, 0666, 1);
+	philo->mainsem = sem_open(MAINSEM, O_CREAT, 0666, 1);
+	if (philo->fork_sem == SEM_FAILED || philo->right_to_take_sem == SEM_FAILED || philo->death_sem == SEM_FAILED || philo->eat_count_sem == SEM_FAILED || philo->write_sem == SEM_FAILED || philo->write_access_sem == SEM_FAILED || philo->mainsem == SEM_FAILED)
 	{
 		sem_unlink(FORKSEM);
 		sem_unlink(RIGHTSEM);
+		sem_unlink(DEATHSEM);
+		sem_unlink(EATCOUNTSEM);
 		free(philo);
 		return (NULL);
 	}
@@ -46,23 +59,18 @@ t_philo	*init_struct(int argc, char *argv[])
 	{
 		sem_unlink(FORKSEM);
 		sem_unlink(RIGHTSEM);
-		free(philo);
-		return (NULL);
-	}
-	if (pthread_mutex_init(&philo->mutex, NULL) != 0)
-	{
-		sem_unlink(FORKSEM);
-		sem_unlink(RIGHTSEM);
-		free(philo->death_checker);
+		sem_unlink(DEATHSEM);
+		sem_unlink(EATCOUNTSEM);
 		free(philo);
 		return (NULL);
 	}
 	philo->pids = malloc(sizeof(pid_t) * philo->phil_num);
 	if (!philo->pids)
 	{
-		pthread_mutex_destroy(&philo->mutex);
 		sem_unlink(FORKSEM);
 		sem_unlink(RIGHTSEM);
+		sem_unlink(DEATHSEM);
+		sem_unlink(EATCOUNTSEM);
 		free(philo->death_checker);
 		free(philo);
 		return (NULL);
@@ -77,7 +85,8 @@ void	free_struct(t_philo *philo)
 		free(philo->death_checker);
 	sem_unlink(FORKSEM);
 	sem_unlink(RIGHTSEM);
-	pthread_mutex_destroy(&philo->mutex);
+	sem_unlink(DEATHSEM);
+	sem_unlink(EATCOUNTSEM);
 	if (philo->pids)
 		free(philo->pids);
 	free(philo);

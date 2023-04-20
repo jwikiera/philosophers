@@ -27,6 +27,11 @@
 
 # define FORKSEM "/forks"
 # define RIGHTSEM "/righttotake"
+# define DEATHSEM "/deathsem"
+# define EATCOUNTSEM "/eatcountsem"
+# define WRITESEM "/writesem"
+# define WRITEACCESSSEM "/writeaccesssem"
+# define MAINSEM "/mainsem"
 # define FINISHEDEATING 1
 # define DIED 2
 # define ERROR 3
@@ -45,10 +50,14 @@ typedef struct s_philo
 	sem_t			*fork_sem;
 	sem_t			*right_to_take_sem;
 	sem_t			*death_sem;
+	sem_t			*eat_count_sem;
+	sem_t			*write_sem;
+	sem_t			*write_access_sem;
+	int				can_write;
 	long			time_last_eaten;
 	int				eat_count;
 	pthread_t		*death_checker;
-	pthread_mutex_t	mutex;
+	sem_t			*mainsem;
 	pid_t			*pids;
 }	t_philo;
 
@@ -64,11 +73,13 @@ int			log_eating(t_philo *philo);
 int			log_sleeping(t_philo *philo);
 int			log_thinking(t_philo *philo);
 int			log_ded(t_philo *philo);
+int			has_ability_to_write(t_philo *philo);
+void		disable_ability_to_write(t_philo *philo);
 
 /* philo funcs */
 void		grab_forks(t_philo *philo);
 void		ungrab_forks(t_philo *philo);
-void		set_lat_eaten(t_philo *philo);
+void		set_last_eaten(t_philo *philo);
 
 /* main funcs */
 int			print_invalid_args(void);

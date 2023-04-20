@@ -18,19 +18,24 @@ void	grab_forks(t_philo *philo)
 	{
 		panic_exit(philo, ERROR);
 	}
+	//fprintf(stderr, "philo %d bruhhh1\n", philo->id);
 	if (sem_wait(philo->fork_sem) != 0)
 	{
 		panic_exit(philo, ERROR);
 	}
+	//fprintf(stderr, "philo %d bruhhh2\n", philo->id);
 	log_fork(philo);
+	//fprintf(stderr, "philo %d bruhhh3\n", philo->id);
 	if (sem_wait(philo->fork_sem) != 0)
 	{
 		panic_exit(philo, ERROR);
 	}
+	//fprintf(stderr, "philo %d bruhhh4\n", philo->id);
 	if (sem_post(philo->right_to_take_sem) != 0)
 	{
 		panic_exit(philo, ERROR);
 	}
+	//fprintf(stderr, "philo %d bruhhh5\n", philo->id);
 	log_fork(philo);
 }
 
@@ -46,9 +51,11 @@ void	ungrab_forks(t_philo *philo)
 	}
 }
 
-void	set_lat_eaten(t_philo *philo)
+void	set_last_eaten(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->mutex);
+	//fprintf(stderr, "setting last eaten\n");
+	//fprintf(stderr, "lasteaten: %p\n", (void*)&philo->mutex);
+	sem_wait(philo->mainsem);
 	philo->time_last_eaten = timenow(NULL);
-	pthread_mutex_unlock(&philo->mutex);
+	sem_post(philo->mainsem);
 }
