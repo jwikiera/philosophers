@@ -80,6 +80,7 @@ void		disable_ability_to_write(t_philo *philo);
 void		grab_forks(t_philo *philo);
 void		ungrab_forks(t_philo *philo);
 void		set_last_eaten(t_philo *philo);
+int			solo_routine(t_philo *philo);
 
 /* main funcs */
 int			print_invalid_args(void);

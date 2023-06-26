@@ -12,21 +12,11 @@
 
 #include "philo.h"
 
-void sig_handler_death(int signum)
+void	sig_handler_death(int signum)
 {
 	(void) signum;
 	fprintf(stderr, "received sigusr1\n");
 	exit(DIED);
-}
-
-int	solo_routine(t_philo *philo)
-{
-	log_fork(philo);
-	//mysleep(philo->time2die, philo);
-	mysleepmicro(philo->time2die);
-	log_ded(philo);
-	free_struct(philo);
-	return (0);
 }
 
 int	create_and_wait_for_children(t_philo *philo)
@@ -43,12 +33,10 @@ int	create_and_wait_for_children(t_philo *philo)
 		if (id != 0)
 		{
 			philo->id++;
-			//fprintf(stderr, "hello from parent\n");
 			philo->pids[i] = id;
 		}
 		else
 		{
-			//fprintf(stderr, "hello from child, my id is %d\n", philo->id);
 			routine(philo);
 			break ;
 		}
@@ -64,8 +52,19 @@ void	killal_children(t_philo *philo)
 	i = 0;
 	while (i < philo->phil_num)
 	{
-		//fprintf(stderr, "killing %d\n", philo->pids[i]);
 		kill(philo->pids[i], SIGKILL);
+		i ++;
+	}
+}
+
+void	wait_for_philos_to_eat(t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	while (i < philo->phil_num * philo->num2eat)
+	{
+		sem_wait(philo->eat_count_sem);
 		i ++;
 	}
 }
@@ -73,8 +72,6 @@ void	killal_children(t_philo *philo)
 int	main(int argc, char **argv)
 {
 	t_philo		*philo;
-	int			i;
-	//int			wait_res;
 
 	if (signal(SIGUSR1, sig_handler_death) == SIG_ERR)
 		exit(ERROR);
@@ -89,43 +86,11 @@ int	main(int argc, char **argv)
 	if (philo->phil_num == 1)
 		return (solo_routine(philo));
 	create_and_wait_for_children(philo);
-
 	if (philo->num2eat == -1)
-	{
 		sem_wait(philo->death_sem);
-	}
 	else
-	{
-		i = 0;
-		while (i < philo->phil_num * philo->num2eat)
-		{
-			sem_wait(philo->eat_count_sem);
-			i ++;
-		}
-	}
-	//fprintf(stderr, "killing children\n");
+		wait_for_philos_to_eat(philo);
 	killal_children(philo);
-
-	/*while (i < philo->phil_num)
-	{
-		if (wait(&wait_res) == -1)
-		{
-			killal_children(philo);
-			panic_exit(philo, ERROR);
-		}
-		fprintf(stderr, "received wait: %d, %d, %d\n", wait_res, WIFSIGNALED(wait_res), WTERMSIG(wait_res));
-
-
-		break ;
-
-		if (wait_res == DIED || wait_res == ERROR)
-		{
-			fprintf(stderr, "killing children\n");
-			killal_children(philo);
-			break ;
-		}
-		i ++;
-	}*/
 	free_struct(philo);
 	return (0);
 }

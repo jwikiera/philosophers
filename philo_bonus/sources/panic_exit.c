@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_routine.c                                    :+:      :+:    :+:   */
+/*   panic_exit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,24 +12,8 @@
 
 #include "philo.h"
 
-void	routine(t_philo *philo)
+void	panic_exit(t_philo *philo, int code)
 {
-	pthread_create(philo->death_checker, NULL, &death_checker_routine, philo);
-	set_last_eaten(philo);
-	while (!get_philo_died(philo))
-	{
-		grab_forks(philo);
-		set_last_eaten(philo);
-		log_eating(philo);
-		mysleep(philo->time2eat, philo);
-		if (philo->eat_count < philo->num2eat)
-		{
-			philo->eat_count++;
-			sem_post(philo->eat_count_sem);
-		}
-		ungrab_forks(philo);
-		log_sleeping(philo);
-		mysleep(philo->time2sleep, philo);
-		log_thinking(philo);
-	}
+	free_struct(philo);
+	exit(code);
 }

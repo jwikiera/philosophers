@@ -76,7 +76,8 @@ SOURCES_LIST			:= main.c\
 							main_funcs.c\
 							panic_exit.c\
 							death_checker.c\
-							mutex_get_set.c
+							mutex_get_set.c\
+							solo_routine.c
 
 HEADER_LIST				:= philo.h
 HEADER_FILES			:= $(addprefix $(INCLUDE_DIR), $(HEADER_LIST))

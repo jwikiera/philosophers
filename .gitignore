@@ -18,6 +18,3 @@ venv/
 venv/*
 builds/*
 philosophers
-**/philosophers
-**/philo
-**/philo_bonus

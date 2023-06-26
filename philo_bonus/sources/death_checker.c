@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_routine.c                                    :+:      :+:    :+:   */
+/*   death_checker.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,24 +12,21 @@
 
 #include "philo.h"
 
-void	routine(t_philo *philo)
+void	*death_checker_routine(void *arg_)
 {
-	pthread_create(philo->death_checker, NULL, &death_checker_routine, philo);
+	t_philo	*philo;
+	int		i;
+
+	philo = arg_;
 	set_last_eaten(philo);
 	while (!get_philo_died(philo))
 	{
-		grab_forks(philo);
-		set_last_eaten(philo);
-		log_eating(philo);
-		mysleep(philo->time2eat, philo);
-		if (philo->eat_count < philo->num2eat)
-		{
-			philo->eat_count++;
-			sem_post(philo->eat_count_sem);
-		}
-		ungrab_forks(philo);
-		log_sleeping(philo);
-		mysleep(philo->time2sleep, philo);
-		log_thinking(philo);
+		mysleepmicro(10);
 	}
+	log_ded(philo);
+	sem_post(philo->death_sem);
+	i = 0;
+	while (i < philo->phil_num * philo->num2eat)
+		sem_post(philo->eat_count_sem);
+	return (NULL);
 }

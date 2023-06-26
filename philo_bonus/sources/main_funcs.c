@@ -20,8 +20,6 @@ int	print_invalid_args(void)
 
 int	get_philo_died(t_philo *philo)
 {
-	//fprintf(stderr, "using get_philo_died\n");
-	//fprintf(stderr, "get_philo_died: %p\n", (void*)&philo->mutex);
 	int	ret;
 
 	sem_wait(philo->mainsem);

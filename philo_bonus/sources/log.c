@@ -30,7 +30,6 @@ int	log_eating(t_philo *philo)
 
 int	log_sleeping(t_philo *philo)
 {
-	//fprintf(stderr, "philo %d waiting for write_sem3\n", philo->id);
 	sem_wait(philo->write_sem);
 	printf("%lld %d is sleeping\n", timenow(philo), philo->id);
 	sem_post(philo->write_sem);
@@ -39,7 +38,6 @@ int	log_sleeping(t_philo *philo)
 
 int	log_thinking(t_philo *philo)
 {
-	//fprintf(stderr, "philo %d waiting for write_sem4\n", philo->id);
 	sem_wait(philo->write_sem);
 	printf("%lld %d is thinking\n", timenow(philo), philo->id);
 	sem_post(philo->write_sem);
@@ -48,9 +46,7 @@ int	log_thinking(t_philo *philo)
 
 int	log_ded(t_philo *philo)
 {
-	//fprintf(stderr, "philo %d waiting for write_sem5\n", philo->id);
 	sem_wait(philo->write_sem);
-	//fprintf(stderr, "logging death2\n");
 	printf("%lld %d died\n", timenow(philo), philo->id);
 	return (1);
 }

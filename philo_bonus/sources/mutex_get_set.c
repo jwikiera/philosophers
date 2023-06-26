@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_routine.c                                    :+:      :+:    :+:   */
+/*   mutex_get_set.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jwikiera <jwikiera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,24 +12,19 @@
 
 #include "philo.h"
 
-void	routine(t_philo *philo)
+int	has_ability_to_write(t_philo *philo)
 {
-	pthread_create(philo->death_checker, NULL, &death_checker_routine, philo);
-	set_last_eaten(philo);
-	while (!get_philo_died(philo))
-	{
-		grab_forks(philo);
-		set_last_eaten(philo);
-		log_eating(philo);
-		mysleep(philo->time2eat, philo);
-		if (philo->eat_count < philo->num2eat)
-		{
-			philo->eat_count++;
-			sem_post(philo->eat_count_sem);
-		}
-		ungrab_forks(philo);
-		log_sleeping(philo);
-		mysleep(philo->time2sleep, philo);
-		log_thinking(philo);
-	}
+	int	res;
+
+	sem_wait(philo->write_access_sem);
+	res = philo->can_write;
+	sem_post(philo->write_access_sem);
+	return (res);
+}
+
+void	disable_ability_to_write(t_philo *philo)
+{
+	sem_wait(philo->write_access_sem);
+	philo->can_write = 1;
+	sem_post(philo->write_access_sem);
 }
