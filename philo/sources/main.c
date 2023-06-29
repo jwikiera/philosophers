@@ -14,6 +14,7 @@
 
 int	solo_routine(t_philo *philo)
 {
+	philo->t0 = timenow(NULL);
 	log_fork(philo, 0);
 	mysleep(philo->time2die, philo);
 	log_ded(philo, 0);
