@@ -19,7 +19,6 @@ void	init_one(t_philo *philo, char *argv[], int argc)
 	philo->time2eat = ph_atoi(argv[3]);
 	philo->time2sleep = ph_atoi(argv[4]);
 	philo->id = 1;
-	philo->death_checker = NULL;
 	philo->pids = NULL;
 	if (argc == 6)
 		philo->num2eat = ph_atoi(argv[5]);
@@ -33,6 +32,7 @@ void	init_one(t_philo *philo, char *argv[], int argc)
 	sem_unlink(WRITESEM);
 	sem_unlink(WRITEACCESSSEM);
 	sem_unlink(MAINSEM);
+	sem_unlink(DEATHSTATSEM);
 	philo->fork_sem = sem_open(FORKSEM, O_CREAT, 0666, philo->phil_num);
 	philo->right_to_take_sem = sem_open(RIGHTSEM, O_CREAT, 0666, 1);
 	philo->death_sem = sem_open(DEATHSEM, O_CREAT, 0666, 0);
@@ -41,14 +41,16 @@ void	init_one(t_philo *philo, char *argv[], int argc)
 	philo->write_access_sem = sem_open(WRITEACCESSSEM, O_CREAT, 0666, 1);
 }
 
-t_philo	*ret_unlink(t_philo *philo, int free_deathchecker)
+t_philo	*ret_unlink(t_philo *philo)
 {
 	sem_unlink(FORKSEM);
 	sem_unlink(RIGHTSEM);
 	sem_unlink(DEATHSEM);
 	sem_unlink(EATCOUNTSEM);
-	if (free_deathchecker)
-		free(philo->death_checker);
+	sem_unlink(WRITESEM);
+	sem_unlink(WRITEACCESSSEM);
+	sem_unlink(MAINSEM);
+	sem_unlink(DEATHSTATSEM);
 	free(philo);
 	return (NULL);
 }
@@ -67,24 +69,23 @@ t_philo	*init_struct(int argc, char *argv[])
 		|| philo->write_sem == SEM_FAILED
 		|| philo->write_access_sem == SEM_FAILED
 		|| philo->mainsem == SEM_FAILED)
-		return (ret_unlink(philo, 0));
-	philo->death_checker = malloc(sizeof(pthread_t));
-	if (!philo->death_checker)
-		return (ret_unlink(philo, 0));
+		return (ret_unlink(philo));
 	philo->pids = malloc(sizeof(pid_t) * philo->phil_num);
 	if (!philo->pids)
-		return (ret_unlink(philo, 1));
+		return (ret_unlink(philo));
 	return (philo);
 }
 
 void	free_struct(t_philo *philo)
 {
-	if (philo->death_checker)
-		free(philo->death_checker);
 	sem_unlink(FORKSEM);
 	sem_unlink(RIGHTSEM);
 	sem_unlink(DEATHSEM);
 	sem_unlink(EATCOUNTSEM);
+	sem_unlink(WRITESEM);
+	sem_unlink(WRITEACCESSSEM);
+	sem_unlink(MAINSEM);
+	sem_unlink(DEATHSTATSEM);
 	if (philo->pids)
 		free(philo->pids);
 	free(philo);

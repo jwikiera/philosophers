@@ -38,7 +38,7 @@ int	create_and_wait_for_children(t_philo *philo)
 		else
 		{
 			routine(philo);
-			break ;
+			exit (0);
 		}
 		i ++;
 	}
@@ -67,6 +67,7 @@ void	wait_for_philos_to_eat(t_philo *philo)
 		sem_wait(philo->eat_count_sem);
 		i ++;
 	}
+	swait(philo->write_sem, philo);
 }
 
 int	main(int argc, char **argv)
@@ -87,7 +88,7 @@ int	main(int argc, char **argv)
 		return (solo_routine(philo));
 	create_and_wait_for_children(philo);
 	if (philo->num2eat == -1)
-		sem_wait(philo->death_sem);
+		swait(philo->death_sem, philo);
 	else
 		wait_for_philos_to_eat(philo);
 	killal_children(philo);

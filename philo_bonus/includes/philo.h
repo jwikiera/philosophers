@@ -32,6 +32,7 @@
 # define WRITESEM "/writesem"
 # define WRITEACCESSSEM "/writeaccesssem"
 # define MAINSEM "/mainsem"
+# define DEATHSTATSEM "/deathstatsem"
 # define FINISHEDEATING 1
 # define DIED 2
 # define ERROR 3
@@ -56,7 +57,6 @@ typedef struct s_philo
 	int				can_write;
 	long			time_last_eaten;
 	int				eat_count;
-	pthread_t		*death_checker;
 	sem_t			*mainsem;
 	pid_t			*pids;
 }	t_philo;
@@ -107,5 +107,10 @@ int			ph_atoi(const char *nptr);
 long long	timenow(t_philo *philo);
 void		mysleep(long long amount, t_philo *philo);
 void		mysleepmicro(long long amount);
+
+/* semaphore func wrappers - checking for errors
+ * and exiting if smth goes wrong */
+void		swait(sem_t *sem, t_philo *philo);
+void		spost(sem_t *sem, t_philo *philo);
 
 #endif

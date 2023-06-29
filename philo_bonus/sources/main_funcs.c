@@ -22,8 +22,6 @@ int	get_philo_died(t_philo *philo)
 {
 	int	ret;
 
-	sem_wait(philo->mainsem);
 	ret = timenow(NULL) - philo->time_last_eaten > philo->time2die;
-	sem_post(philo->mainsem);
 	return (ret);
 }

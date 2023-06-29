@@ -14,39 +14,39 @@
 
 int	log_fork(t_philo *philo)
 {
-	sem_wait(philo->write_sem);
+	swait(philo->write_sem, philo);
 	printf("%lld %d has taken a fork\n", timenow(philo), philo->id);
-	sem_post(philo->write_sem);
+	spost(philo->write_sem, philo);
 	return (1);
 }
 
 int	log_eating(t_philo *philo)
 {
-	sem_wait(philo->write_sem);
+	swait(philo->write_sem, philo);
 	printf("%lld %d is eating\n", timenow(philo), philo->id);
-	sem_post(philo->write_sem);
+	spost(philo->write_sem, philo);
 	return (1);
 }
 
 int	log_sleeping(t_philo *philo)
 {
-	sem_wait(philo->write_sem);
+	swait(philo->write_sem, philo);
 	printf("%lld %d is sleeping\n", timenow(philo), philo->id);
-	sem_post(philo->write_sem);
+	spost(philo->write_sem, philo);
 	return (1);
 }
 
 int	log_thinking(t_philo *philo)
 {
-	sem_wait(philo->write_sem);
+	swait(philo->write_sem, philo);
 	printf("%lld %d is thinking\n", timenow(philo), philo->id);
-	sem_post(philo->write_sem);
+	spost(philo->write_sem, philo);
 	return (1);
 }
 
 int	log_ded(t_philo *philo)
 {
-	sem_wait(philo->write_sem);
+	swait(philo->write_sem, philo);
 	printf("%lld %d died\n", timenow(philo), philo->id);
 	return (1);
 }
