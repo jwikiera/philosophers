@@ -29,12 +29,13 @@ void	routine(t_philo *philo)
 	set_last_eaten(philo);
 	if (philo->id % 2)
 		mysleep(20, philo);
+	create_thread(philo);
 	while (!get_philo_died(philo))
 	{
 		philo->time_to_live = get_ttl(philo);
-		create_thread(philo);
+
 		grab_forks(philo);
-		pthread_detach(*philo->death_checker);
+		//pthread_detach(*philo->death_checker);
 		set_last_eaten(philo);
 		log_eating(philo);
 		mysleep(philo->time2eat, philo);

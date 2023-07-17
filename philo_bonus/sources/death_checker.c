@@ -15,13 +15,15 @@
 void	*death_checker_routine(void *arg_)
 {
 	t_philo	*philo;
-	long	local_ttl;
+	//long	local_ttl;
 
 	philo = arg_;
-	local_ttl = philo->time_to_live;
+	/*local_ttl = philo->time_to_live;
 	mysleepmicro(local_ttl);
 	if (!philo->should_print)
-		return (NULL);
+		return (NULL);*/
+	while (!get_philo_died(philo))
+		mysleepmicro(10);
 	die(philo);
 	return (NULL);
 }

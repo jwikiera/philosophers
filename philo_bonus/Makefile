@@ -43,7 +43,7 @@ ifdef DEBUG
 	OPTFLAG				:= -O0
 else
 	DEVFLAGS			:=
-	OPTFLAG				:= -O3
+	OPTFLAG				:= -O0
 endif
 
 CC						:= cc

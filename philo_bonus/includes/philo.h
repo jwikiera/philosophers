@@ -55,7 +55,7 @@ typedef struct s_philo
 	sem_t			*write_sem;
 	sem_t			*write_access_sem;
 	int				can_write;
-	long			time_last_eaten;
+	_Atomic long	time_last_eaten;
 	int				eat_count;
 	pthread_t		*death_checker;
 	sem_t			*mainsem;
