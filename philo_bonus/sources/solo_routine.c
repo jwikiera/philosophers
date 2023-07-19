@@ -14,6 +14,7 @@
 
 int	solo_routine(t_philo *philo)
 {
+	philo->t0 = timenow(NULL);
 	log_fork(philo);
 	mysleepmicro(philo->time2die);
 	log_ded(philo);
